@@ -6,7 +6,11 @@ function Home(props) {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Home Tab</Text>
-      <TouchableOpacity
+      <TouchableOpacity // add button to see event details (temporary)
+        onPress={() => navigation.navigate('EventDetails')}>
+        <Text>EventDetails</Text>
+      </TouchableOpacity>
+      <TouchableOpacity // add button to add new event
         onPress={() => navigation.navigate('AddEvent')}
         style={styles.fab}>
         <Text style={styles.fabIcon}>+</Text>
