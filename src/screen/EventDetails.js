@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 
-function EventDetail(props) {
+function EventDetails(props) {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Event Detail Tab</Text>
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EventDetail;
+export default EventDetails;

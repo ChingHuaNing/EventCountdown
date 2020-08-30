@@ -6,6 +6,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import Home from '../screen/Home';
 import PastEvent from '../screen/PastEvent';
+import AddEvent from '../screen/AddEvent';
+import EditEvent from '../screen/EditEvent';
+import EventDetails from '../screen/EventDetails';
+import Calendar from '../screen/Calendar';
+import Settings from '../screen/Settings';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -15,13 +20,12 @@ function MainStackNavigator() {
       <Stack.Navigator
         initialRouteName="Home"
         screenOptions={{
-          // enable the user to pull down screen to go back to previous page
-          //gestureEnabled: true,
           headerStyle: {
             backgroundColor: '#ffff80',
           },
           headerTitleStyle: {
             fontWeight: 'bold',
+            alignSelf: 'center',
           },
           headerTintColor: '#000000',
           headerBackTitleVisible: false,
@@ -31,18 +35,33 @@ function MainStackNavigator() {
         <Stack.Screen
           name="Home"
           component={MainTabNavigator}
-          options={{title: 'Home Screen'}}
-        />
-        {/* <Stack.Screen
-          name="Detail"
-          component={Detail}
-          options={{title: 'Detail Screen'}}
+          options={{title: 'My Days'}}
         />
         <Stack.Screen
-          name="Setting"
+          name="AddEvent"
+          component={AddEvent}
+          options={{title: 'Add New Event'}}
+        />
+        <Stack.Screen
+          name="EditEvent"
+          component={EditEvent}
+          options={{title: 'Edit Event'}}
+        />
+        <Stack.Screen
+          name="EventDetails"
+          component={EventDetails}
+          options={{title: 'Event Details'}}
+        />
+        <Stack.Screen
+          name="Calendar"
+          component={Calendar}
+          options={{title: 'Calendar'}}
+        />
+        <Stack.Screen
+          name="Settings"
           component={Settings}
           options={{title: 'Settings'}}
-        /> */}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

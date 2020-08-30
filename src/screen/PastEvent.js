@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 
 function PastEvent(props) {
+  const {navigation} = props;
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Past Events Tab</Text>
