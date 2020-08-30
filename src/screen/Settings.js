@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 
-function Setting(props) {
+function Settings(props) {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Setting Tab</Text>
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Setting;
+export default Settings;
