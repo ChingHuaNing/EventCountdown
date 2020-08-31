@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -14,15 +14,14 @@ import {
 import Mytextinput from './components/Mytextinput';
 import Mybutton from './components/Mybutton';
 
-import { openDatabase } from 'react-native-sqlite-storage';
+import {openDatabase} from 'react-native-sqlite-storage';
 import ImagePicker from 'react-native-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 //Connction to access the pre-populated user_db.db
-var db = openDatabase({ name: 'event_db.db', createFromLocation : 1});
+var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
-
-const AddEvent = ({ navigation }) => {
+const AddEvent = ({navigation}) => {
   let [eventTitle, setEventTitle] = useState('');
   let [eventPhoto, setEventPhoto] = useState(require('./img/photo.png'));
   let [eventDate, setEventDate] = useState('');
@@ -54,14 +53,19 @@ const AddEvent = ({ navigation }) => {
     showMode('time');
   };
 
-
-
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
 
-
   let add_event = () => {
-    console.log(eventTitle,eventPhoto,eventDate,eventTime,eventVenue,eventDesc,eventDiary);
+    console.log(
+      eventTitle,
+      eventPhoto,
+      eventDate,
+      eventTime,
+      eventVenue,
+      eventDesc,
+      eventDiary,
+    );
 
     if (!eventTitle) {
       alert('Please fill event title');
@@ -76,23 +80,26 @@ const AddEvent = ({ navigation }) => {
       return;
     }
     if (!eventVenue) {
-          alert('Please fill event venue');
-          return;
+      alert('Please fill event venue');
+      return;
     }
     if (!eventDesc) {
-          alert('Please fill event description');
-          return;
+      alert('Please fill event description');
+      return;
     }
 
-
-
     db.transaction(function (tx) {
-
-     
       tx.executeSql(
         'INSERT INTO table_event (event_title, event_photo,event_date,event_time,event_venue,event_desc,event_diary) VALUES (?,?,?,?,?,?,?)',
-        [eventTitle,eventPhoto,eventDate,eventTime,eventVenue,eventDesc,eventDiary],
-       
+        [
+          eventTitle,
+          eventPhoto,
+          eventDate,
+          eventTime,
+          eventVenue,
+          eventDesc,
+          eventDiary,
+        ],
 
         (tx, results) => {
           console.log('Results', results.rowsAffected);
@@ -106,45 +113,44 @@ const AddEvent = ({ navigation }) => {
                   onPress: () => navigation.navigate('HomeScreen'),
                 },
               ],
-              { cancelable: false }
+              {cancelable: false},
             );
           } else alert('Event added failed');
-        }
-
+        },
       );
     });
+  };
 
-  };  
+  const options = {
+    title: 'Select Image',
+    storageOptions: {
+      skipBackup: true,
+      path: 'images',
+    },
+  };
+
+  let choosePhoto = () => {
+    ImagePicker.showImagePicker(options, (res) => {
+      console.log('Response = ', res);
 
 
-    const options = {
-      title: 'Select Image',
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
+      if (res.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (res.error) {
+        console.log('ImagePicker Error: ', res.error);
+      } else if (res.customButton) {
+        console.log('User tapped custom button: ', res.customButton);
+      } else {
+        // const source = { uri: res.uri };
 
-    let choosePhoto = () => {
-      console.log(eventPhoto)
-        ImagePicker.showImagePicker(options, (res) => {
-        console.log('Response = ', res);
 
-        if (res.didCancel) {
-          console.log('User cancelled image picker');
-        } else if (res.error) {
-          console.log('ImagePicker Error: ', res.error);
-        } else if (res.customButton) {
-          console.log('User tapped custom button: ', res.customButton);
-        } else {
-      // const source = { uri: res.uri };
-         
-          // You can also display the image using data:
-          // const source = { uri: 'data:image/jpeg;base64,' + res.data };
+        // You can also display the image using data:
+        // const source = { uri: 'data:image/jpeg;base64,' + res.data };
 
-       //   this.setState({
+        //   this.setState({
         //   photo: source,
         //  });
+
         let source = { uri: res.uri };
         console.log({ source });
         console.log("Testing",eventPhoto)
@@ -156,11 +162,14 @@ const AddEvent = ({ navigation }) => {
       });
     
 
- 
+
+        // return source;
+      }
+    });
   };
 
-
   return (
+
     
 
     <SafeAreaView style={{ flex: 1 }}>
@@ -247,21 +256,21 @@ const AddEvent = ({ navigation }) => {
                   maxLength={225}
                //   numberOfLines={5}
                //   multiline={true}
+
                 //  style={{ textAlignVertical: 'top', padding: 10 }}
-                style={{ padding: 10 }}
-                />
+                style={{padding: 10}}
+              />
 
-                <Mytextinput
+              <Mytextinput
+                label="Description"
+                placeholder="Enter Event Description"
+                onChangeText={(eventDesc) => setEventDesc(eventDesc)}
+                maxLength={225}
+                numberOfLines={5}
+                multiline={true}
+                style={{textAlignVertical: 'top', padding: 10}}
+              />
 
-                  label ="Description"
-                  placeholder="Enter Event Description"
-                  onChangeText={(eventDesc) => setEventDesc(eventDesc)}
-                  maxLength={225}
-                  numberOfLines={5}
-                  multiline={true}
-                  style={{ textAlignVertical: 'top', padding: 10 }}
-               
-                />
 
                 <View style={{ flex: 1 , flexDirection: 'row'}}>
                 <Text style = {styles.titleText}>{"Alert"}</Text> 
@@ -286,54 +295,34 @@ const AddEvent = ({ navigation }) => {
                   style={{ textAlignVertical: 'top', padding: 10 }}
 
                 />
+              </View>
 
+              <Mytextinput
+                label="Diary"
+                placeholder="Enter Event Diary"
+                onChangeText={(eventDiary) => setEventDiary(eventDiary)}
+                maxLength={225}
+                numberOfLines={5}
+                multiline={true}
+                style={{textAlignVertical: 'top', padding: 10}}
+              />
 
-
-
-
-
-
-                <Mybutton title="Submit" customClick={add_event} />
-              </KeyboardAvoidingView>
-            </ScrollView>
+              <Mybutton title="Submit" customClick={add_event} />
+            </KeyboardAvoidingView>
+          </ScrollView>
+        </View>
       </View>
-
-    </View>
-  </SafeAreaView>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
+    </SafeAreaView>
   );
 };
 
-export default AddEvent;
-
 const styles = StyleSheet.create({
   baseText: {
-    fontFamily: "Cochin"
+    fontFamily: 'Cochin',
   },
   titleText: {
     fontSize: 20,
+
     fontWeight: "bold",
     textAlignVertical: 'top', 
     paddingLeft: 40,
