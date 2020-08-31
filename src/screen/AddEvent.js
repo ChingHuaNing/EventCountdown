@@ -16,7 +16,7 @@ import Mybutton from './components/Mybutton';
 
 import {openDatabase} from 'react-native-sqlite-storage';
 import ImagePicker from 'react-native-image-picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
+//import DateTimePicker from '@react-native-community/datetimepicker';
 
 //Connction to access the pre-populated user_db.db
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
@@ -53,8 +53,7 @@ const AddEvent = ({navigation}) => {
     showMode('time');
   };
 
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   let add_event = () => {
     console.log(
@@ -132,8 +131,6 @@ const AddEvent = ({navigation}) => {
   let choosePhoto = () => {
     ImagePicker.showImagePicker(options, (res) => {
       console.log('Response = ', res);
-
-
       if (res.didCancel) {
         console.log('User cancelled image picker');
       } else if (res.error) {
@@ -143,7 +140,6 @@ const AddEvent = ({navigation}) => {
       } else {
         // const source = { uri: res.uri };
 
-
         // You can also display the image using data:
         // const source = { uri: 'data:image/jpeg;base64,' + res.data };
 
@@ -151,59 +147,45 @@ const AddEvent = ({navigation}) => {
         //   photo: source,
         //  });
 
-        let source = { uri: res.uri };
-        console.log({ source });
-        console.log("Testing",eventPhoto)
+        let source = {uri: res.uri};
+        console.log({source});
+        console.log('Testing', eventPhoto);
 
         setEventPhoto(source);
 
-       // return source;
-        }
-      });
-    
-
-
         // return source;
       }
+
+      // return source;
     });
   };
 
   return (
+    <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: 'white'}}>
+        <View style={{flex: 1}}>
+          <ScrollView keyboardShouldPersistTaps="handled">
+            <KeyboardAvoidingView
+              behavior="padding"
+              style={{flex: 1, justifyContent: 'space-between'}}>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image source={eventPhoto} style={{width: 120, height: 100}} />
+                <Mybutton title="Choose Photo" customClick={choosePhoto} />
+              </View>
 
-    
-
-    <SafeAreaView style={{ flex: 1 }}>
-     <View style={{ flex: 1, backgroundColor: 'white' }}>
-
-      <View style={{ flex: 1 }}>
-            <ScrollView keyboardShouldPersistTaps="handled">
-              <KeyboardAvoidingView
-                behavior="padding"
-                style={{ flex: 1, justifyContent: 'space-between' }}>
-
-
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-              
-              <Image
-                source={(eventPhoto)}
-                style={{ width: 120, height: 100}}
+              <Mytextinput
+                label="Title"
+                placeholder="Enter Event Title"
+                onChangeText={(eventTitle) => setEventTitle(eventTitle)}
+                style={{padding: 10}}
               />
-               <Mybutton title= "Choose Photo" customClick={choosePhoto} />
-        
-        </View>
-            
 
-
-                <Mytextinput
-
-                  label="Title"
-                  placeholder="Enter Event Title"
-                  onChangeText={(eventTitle) => setEventTitle(eventTitle)}
-                  style={{ padding: 10 }}
-                />
-
-            
-                    {/* <View>
+              {/* <View>
                     <Mybutton title= "Date picker" customClick={showDatepicker} />
                     </View>
                     <View>
@@ -219,43 +201,34 @@ const AddEvent = ({navigation}) => {
                         onChange={onChange}
                       />
                     )} */}
-                  
-
-
-
-
-
-
 
               <Mytextinput
-               label = "Date"
+                label="Date"
                 placeholder="Enter Event Date"
-                 onChangeText={(eventDate) => setEventDate(eventDate)}
-                 maxLength={10}
-                 keyboardType="numeric"
-                 style={{ padding: 10 }}
-               />
+                onChangeText={(eventDate) => setEventDate(eventDate)}
+                maxLength={10}
+                keyboardType="numeric"
+                style={{padding: 10}}
+              />
 
-               <Mytextinput
-                 label = "Time"
-                 placeholder="Enter Event Time"
-                 onChangeText={(eventTime) => setEventTime(eventTime)}
-                 maxLength={225}
-                 numberOfLines={5}
-                 multiline={true}
-                 style={{ textAlignVertical: 'top', padding: 10 }}
-               style={{ padding: 10 }}
-               />
+              <Mytextinput
+                label="Time"
+                placeholder="Enter Event Time"
+                onChangeText={(eventTime) => setEventTime(eventTime)}
+                maxLength={225}
+                numberOfLines={5}
+                multiline={true}
+                style={{textAlignVertical: 'top', padding: 10}}
+                style={{padding: 10}}
+              />
 
-
-
-               <Mytextinput
-                  label = "Venue"
-                  placeholder="Enter Event Venue"
-                  onChangeText={(eventVenue) => setEventVenue(eventVenue)}
-                  maxLength={225}
-               //   numberOfLines={5}
-               //   multiline={true}
+              <Mytextinput
+                label="Venue"
+                placeholder="Enter Event Venue"
+                onChangeText={(eventVenue) => setEventVenue(eventVenue)}
+                maxLength={225}
+                //   numberOfLines={5}
+                //   multiline={true}
 
                 //  style={{ textAlignVertical: 'top', padding: 10 }}
                 style={{padding: 10}}
@@ -271,31 +244,27 @@ const AddEvent = ({navigation}) => {
                 style={{textAlignVertical: 'top', padding: 10}}
               />
 
-
-                <View style={{ flex: 1 , flexDirection: 'row'}}>
-                <Text style = {styles.titleText}>{"Alert"}</Text> 
-                <Switch style = {styles.switch}
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                        ios_backgroundColor="#3e3e3e"
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
-                      />
-
-                      </View>
-
-                <Mytextinput
-
-                  label ="Diary"
-                  placeholder="Enter Event Diary"
-                  onChangeText={(eventDiary) => setEventDiary(eventDiary)}
-                  maxLength={225}
-                  numberOfLines={5}
-                  multiline={true}
-                  style={{ textAlignVertical: 'top', padding: 10 }}
-
+              <View style={{flex: 1, flexDirection: 'row'}}>
+                <Text style={styles.titleText}>{'Alert'}</Text>
+                <Switch
+                  style={styles.switch}
+                  trackColor={{false: '#767577', true: '#81b0ff'}}
+                  thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitch}
+                  value={isEnabled}
                 />
               </View>
+
+              <Mytextinput
+                label="Diary"
+                placeholder="Enter Event Diary"
+                onChangeText={(eventDiary) => setEventDiary(eventDiary)}
+                maxLength={225}
+                numberOfLines={5}
+                multiline={true}
+                style={{textAlignVertical: 'top', padding: 10}}
+              />
 
               <Mytextinput
                 label="Diary"
@@ -323,18 +292,16 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 20,
 
-    fontWeight: "bold",
-    textAlignVertical: 'top', 
+    fontWeight: 'bold',
+    textAlignVertical: 'top',
     paddingLeft: 40,
     paddingTop: 10,
     paddingBottom: 10,
-
-    
-    
-
   },
 
-  switch:{
-    paddingLeft: 250
-  }
+  switch: {
+    paddingLeft: 250,
+  },
 });
+
+export default AddEvent;
