@@ -10,15 +10,15 @@ import {
   Image,
   Switch,
   Platform,
-  Button
+  Button,
 } from 'react-native';
 import Mytextinput from './components/Mytextinput';
 import Mybutton from './components/Mybutton';
 
 import {openDatabase} from 'react-native-sqlite-storage';
 import ImagePicker from 'react-native-image-picker';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import DateTimePicker from '@react-native-community/datetimepicker'
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 //Connction to access the pre-populated user_db.db
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
@@ -26,8 +26,8 @@ var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 const AddEvent = ({navigation}) => {
   let [eventTitle, setEventTitle] = useState('');
   let [eventPhoto, setEventPhoto] = useState(require('./img/photo.png'));
-//  let [eventDate, setEventDate] = useState('');
- // let [eventTime, setEventTime] = useState('');
+  //  let [eventDate, setEventDate] = useState('');
+  // let [eventTime, setEventTime] = useState('');
   let [eventVenue, setEventVenue] = useState('');
   let [eventDesc, setEventDesc] = useState('');
   let [eventDiary, setEventDiary] = useState('');
@@ -48,32 +48,31 @@ const AddEvent = ({navigation}) => {
   };
 
   const showDatepicker = () => {
-    console.log("show datepicker")
+    console.log('show datepicker');
     showMode('date');
   };
 
   const showTimepicker = () => {
-    console.log("show timepicker")
+    console.log('show timepicker');
     showMode('time');
   };
 
   // const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
- 
+
   // const showDatePicker = () => {
   //   setDatePickerVisibility(true);
   // };
- 
+
   // const hideDatePicker = () => {
   //   setDatePickerVisibility(false);
   // };
- 
+
   // const handleConfirm = (date) => {
   //   console.warn("A date has been picked: ", date);
   //   hideDatePicker();
   // };
 
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   let add_event = () => {
     console.log(
@@ -129,7 +128,7 @@ const AddEvent = ({navigation}) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('HomeScreen'),
+                  onPress: () => navigation.navigate('Home'),
                 },
               ],
               {cancelable: false},
@@ -152,7 +151,6 @@ const AddEvent = ({navigation}) => {
     ImagePicker.showImagePicker(options, (res) => {
       console.log('Response = ', res);
 
-
       if (res.didCancel) {
         console.log('User cancelled image picker');
       } else if (res.error) {
@@ -162,7 +160,6 @@ const AddEvent = ({navigation}) => {
       } else {
         // const source = { uri: res.uri };
 
-
         // You can also display the image using data:
         // const source = { uri: 'data:image/jpeg;base64,' + res.data };
 
@@ -170,46 +167,38 @@ const AddEvent = ({navigation}) => {
         //   photo: source,
         //  });
 
-        let source = { uri: res.uri };      
+        let source = {uri: res.uri};
         setEventPhoto(source);
 
-       // return source;
-        }
-      });
-
-    };
+        // return source;
+      }
+    });
+  };
 
   return (
-
-    <SafeAreaView style={{ flex: 1 }}>
-     <View style={{ flex: 1, backgroundColor: 'white' }}>
-
-      <View style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: 'white'}}>
+        <View style={{flex: 1}}>
           <ScrollView keyboardShouldPersistTaps="handled">
             <KeyboardAvoidingView
-                 behavior="padding"
-                 style={{ flex: 1, justifyContent: 'space-between' }}>
+              behavior="padding"
+              style={{flex: 1, justifyContent: 'space-between'}}>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image source={eventPhoto} style={{width: 120, height: 100}} />
+                <Mybutton title="Choose Photo" customClick={choosePhoto} />
+              </View>
 
-
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                      
-                      <Image
-                        source={(eventPhoto)}
-                        style={{ width: 120, height: 100}}
-                      />
-                      <Mybutton title= "Choose Photo" customClick={choosePhoto} />
-                
-                </View>
-            
-
-
-                <Mytextinput
-
-                  label="Title"
-                  placeholder="Enter Event Title"
-                  onChangeText={(eventTitle) => setEventTitle(eventTitle)}
-                  style={{ padding: 10 }}
-                />
+              <Mytextinput
+                label="Title"
+                placeholder="Enter Event Title"
+                onChangeText={(eventTitle) => setEventTitle(eventTitle)}
+                style={{padding: 10}}
+              />
 
               {/* <View>
                     <Button title="Show Date Picker" onPress={showDatePicker} />
@@ -220,31 +209,23 @@ const AddEvent = ({navigation}) => {
                       onCancel={hideDatePicker}
                     />
                   </View> */}
-                          
-                    <View>
-                    <Button onPress={showDatepicker} title="Show date picker!" />
-                    </View>
-                    <View>
-                    <Button onPress={showTimepicker} title="Show time picker!" />
-                    </View>      
-                    {show && (
-                      <DateTimePicker
-                        testID="dateTimePicker"
-                        value={date}
-                        mode={mode}
-                        is24Hour={true}
-                        display="default"
-                        onChange={onChange}
-                      />
-                    )}
-                    
-                  
 
-
-
-
-
-
+              <View>
+                <Button onPress={showDatepicker} title="Show date picker!" />
+              </View>
+              <View>
+                <Button onPress={showTimepicker} title="Show time picker!" />
+              </View>
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChange}
+                />
+              )}
 
               {/* <Mytextinput
                label = "Date"
@@ -266,15 +247,13 @@ const AddEvent = ({navigation}) => {
                style={{ padding: 10 }}
                /> */}
 
-
-
-               <Mytextinput
-                  label = "Venue"
-                  placeholder="Enter Event Venue"
-                  onChangeText={(eventVenue) => setEventVenue(eventVenue)}
-                  maxLength={225}
-               //   numberOfLines={5}
-               //   multiline={true}
+              <Mytextinput
+                label="Venue"
+                placeholder="Enter Event Venue"
+                onChangeText={(eventVenue) => setEventVenue(eventVenue)}
+                maxLength={225}
+                //   numberOfLines={5}
+                //   multiline={true}
 
                 //  style={{ textAlignVertical: 'top', padding: 10 }}
                 style={{padding: 10}}
@@ -290,31 +269,27 @@ const AddEvent = ({navigation}) => {
                 style={{textAlignVertical: 'top', padding: 10}}
               />
 
-
-                <View style={{ flex: 1 , flexDirection: 'row'}}>
-                <Text style = {styles.titleText}>{"Alert"}</Text> 
-                <Switch style = {styles.switch}
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                        ios_backgroundColor="#3e3e3e"
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
-                 />
-
-                </View>
-
-                <Mytextinput
-
-                  label ="Diary"
-                  placeholder="Enter Event Diary"
-                  onChangeText={(eventDiary) => setEventDiary(eventDiary)}
-                  maxLength={225}
-                  numberOfLines={5}
-                  multiline={true}
-                  style={{ textAlignVertical: 'top', padding: 10 }}
-
+              <View style={{flex: 1, flexDirection: 'row'}}>
+                <Text style={styles.titleText}>{'Alert'}</Text>
+                <Switch
+                  style={styles.switch}
+                  trackColor={{false: '#767577', true: '#81b0ff'}}
+                  thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitch}
+                  value={isEnabled}
                 />
-              
+              </View>
+
+              <Mytextinput
+                label="Diary"
+                placeholder="Enter Event Diary"
+                onChangeText={(eventDiary) => setEventDiary(eventDiary)}
+                maxLength={225}
+                numberOfLines={5}
+                multiline={true}
+                style={{textAlignVertical: 'top', padding: 10}}
+              />
 
               <Mytextinput
                 label="Diary"
@@ -327,7 +302,6 @@ const AddEvent = ({navigation}) => {
               />
 
               <Mybutton title="Submit" customClick={add_event} />
-
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
@@ -340,19 +314,18 @@ export default AddEvent;
 
 const styles = StyleSheet.create({
   baseText: {
-    fontFamily: 'Cochin'
+    fontFamily: 'Cochin',
   },
   titleText: {
     fontSize: 20,
-    fontWeight: "bold",
-    textAlignVertical: 'top', 
+    fontWeight: 'bold',
+    textAlignVertical: 'top',
     paddingLeft: 40,
     paddingTop: 10,
     paddingBottom: 10,
-
   },
 
-  switch:{
-    paddingLeft: 250
-  }
+  switch: {
+    paddingLeft: 250,
+  },
 });
