@@ -10,13 +10,15 @@ import {
   Image,
   Switch,
   Platform,
+  Button
 } from 'react-native';
 import Mytextinput from './components/Mytextinput';
 import Mybutton from './components/Mybutton';
 
 import {openDatabase} from 'react-native-sqlite-storage';
 import ImagePicker from 'react-native-image-picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePicker from '@react-native-community/datetimepicker'
 
 //Connction to access the pre-populated user_db.db
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
@@ -24,8 +26,8 @@ var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 const AddEvent = ({navigation}) => {
   let [eventTitle, setEventTitle] = useState('');
   let [eventPhoto, setEventPhoto] = useState(require('./img/photo.png'));
-  let [eventDate, setEventDate] = useState('');
-  let [eventTime, setEventTime] = useState('');
+//  let [eventDate, setEventDate] = useState('');
+ // let [eventTime, setEventTime] = useState('');
   let [eventVenue, setEventVenue] = useState('');
   let [eventDesc, setEventDesc] = useState('');
   let [eventDiary, setEventDiary] = useState('');
@@ -46,12 +48,29 @@ const AddEvent = ({navigation}) => {
   };
 
   const showDatepicker = () => {
+    console.log("show datepicker")
     showMode('date');
   };
 
   const showTimepicker = () => {
+    console.log("show timepicker")
     showMode('time');
   };
+
+  // const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+ 
+  // const showDatePicker = () => {
+  //   setDatePickerVisibility(true);
+  // };
+ 
+  // const hideDatePicker = () => {
+  //   setDatePickerVisibility(false);
+  // };
+ 
+  // const handleConfirm = (date) => {
+  //   console.warn("A date has been picked: ", date);
+  //   hideDatePicker();
+  // };
 
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -151,46 +170,36 @@ const AddEvent = ({navigation}) => {
         //   photo: source,
         //  });
 
-        let source = { uri: res.uri };
-        console.log({ source });
-        console.log("Testing",eventPhoto)
-
+        let source = { uri: res.uri };      
         setEventPhoto(source);
 
        // return source;
         }
       });
-    
 
-
-        // return source;
-      }
-    });
-  };
+    };
 
   return (
-
-    
 
     <SafeAreaView style={{ flex: 1 }}>
      <View style={{ flex: 1, backgroundColor: 'white' }}>
 
       <View style={{ flex: 1 }}>
-            <ScrollView keyboardShouldPersistTaps="handled">
-              <KeyboardAvoidingView
-                behavior="padding"
-                style={{ flex: 1, justifyContent: 'space-between' }}>
+          <ScrollView keyboardShouldPersistTaps="handled">
+            <KeyboardAvoidingView
+                 behavior="padding"
+                 style={{ flex: 1, justifyContent: 'space-between' }}>
 
 
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-              
-              <Image
-                source={(eventPhoto)}
-                style={{ width: 120, height: 100}}
-              />
-               <Mybutton title= "Choose Photo" customClick={choosePhoto} />
-        
-        </View>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                      
+                      <Image
+                        source={(eventPhoto)}
+                        style={{ width: 120, height: 100}}
+                      />
+                      <Mybutton title= "Choose Photo" customClick={choosePhoto} />
+                
+                </View>
             
 
 
@@ -202,13 +211,22 @@ const AddEvent = ({navigation}) => {
                   style={{ padding: 10 }}
                 />
 
-            
-                    {/* <View>
-                    <Mybutton title= "Date picker" customClick={showDatepicker} />
+              {/* <View>
+                    <Button title="Show Date Picker" onPress={showDatePicker} />
+                    <DateTimePickerModal
+                      isVisible={isDatePickerVisible}
+                      mode="date"
+                      onConfirm={handleConfirm}
+                      onCancel={hideDatePicker}
+                    />
+                  </View> */}
+                          
+                    <View>
+                    <Button onPress={showDatepicker} title="Show date picker!" />
                     </View>
                     <View>
-                      <MyButton title="Time picker!" customClick={showTimepicker} />
-                    </View>
+                    <Button onPress={showTimepicker} title="Show time picker!" />
+                    </View>      
                     {show && (
                       <DateTimePicker
                         testID="dateTimePicker"
@@ -218,7 +236,8 @@ const AddEvent = ({navigation}) => {
                         display="default"
                         onChange={onChange}
                       />
-                    )} */}
+                    )}
+                    
                   
 
 
@@ -227,7 +246,7 @@ const AddEvent = ({navigation}) => {
 
 
 
-              <Mytextinput
+              {/* <Mytextinput
                label = "Date"
                 placeholder="Enter Event Date"
                  onChangeText={(eventDate) => setEventDate(eventDate)}
@@ -245,7 +264,7 @@ const AddEvent = ({navigation}) => {
                  multiline={true}
                  style={{ textAlignVertical: 'top', padding: 10 }}
                style={{ padding: 10 }}
-               />
+               /> */}
 
 
 
@@ -280,9 +299,9 @@ const AddEvent = ({navigation}) => {
                         ios_backgroundColor="#3e3e3e"
                         onValueChange={toggleSwitch}
                         value={isEnabled}
-                      />
+                 />
 
-                      </View>
+                </View>
 
                 <Mytextinput
 
@@ -295,7 +314,7 @@ const AddEvent = ({navigation}) => {
                   style={{ textAlignVertical: 'top', padding: 10 }}
 
                 />
-              </View>
+              
 
               <Mytextinput
                 label="Diary"
@@ -308,6 +327,7 @@ const AddEvent = ({navigation}) => {
               />
 
               <Mybutton title="Submit" customClick={add_event} />
+
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
@@ -316,21 +336,19 @@ const AddEvent = ({navigation}) => {
   );
 };
 
+export default AddEvent;
+
 const styles = StyleSheet.create({
   baseText: {
-    fontFamily: 'Cochin',
+    fontFamily: 'Cochin'
   },
   titleText: {
     fontSize: 20,
-
     fontWeight: "bold",
     textAlignVertical: 'top', 
     paddingLeft: 40,
     paddingTop: 10,
     paddingBottom: 10,
-
-    
-    
 
   },
 
