@@ -6,12 +6,12 @@ import {Icon} from 'react-native-elements';
 import {StyleSheet} from 'react-native';
 
 import Home from '../screen/Home';
+import FutureEvent from '../screen/FutureEvent';
 import PastEvent from '../screen/PastEvent';
 import AddEvent from '../screen/AddEvent';
 import EditEvent from '../screen/EditEvent';
 import EventDetails from '../screen/EventDetails';
 import Calendar from '../screen/Calendar';
-import Settings from '../screen/Settings';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -36,24 +36,20 @@ function MainStackNavigator(props) {
         headerMode="float">
         <Stack.Screen
           name="Home"
+          component={Home}
+          options={{title: 'My Days'}}
+        />
+        <Stack.Screen
+          name="FutureEvent"
           component={MainTabNavigator}
           options={({navigation}) => ({
             title: 'My Days',
-            headerLeft: () => (
+            headerRight: () => (
               // Calendar icon
               <Icon
                 onPress={() => navigation.navigate('Calendar')}
                 containerStyle={styles.icon}
                 name="ios-calendar-sharp"
-                type="ionicon"
-              />
-            ),
-            headerRight: () => (
-              // Setting icon
-              <Icon
-                onPress={() => navigation.navigate('Settings')}
-                containerStyle={styles.icon}
-                name="ios-settings-sharp"
                 type="ionicon"
               />
             ),
@@ -90,11 +86,6 @@ function MainStackNavigator(props) {
           component={Calendar}
           options={{title: 'Calendar'}}
         />
-        <Stack.Screen
-          name="Settings"
-          component={Settings}
-          options={{title: 'Settings'}}
-        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -112,7 +103,7 @@ function MainTabNavigator() {
       }}>
       <Tab.Screen
         name="Future Events"
-        component={Home}
+        component={FutureEvent}
         options={{
           tabBarIcon: ({color, size}) => (
             <Icon
