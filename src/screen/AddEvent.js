@@ -16,7 +16,7 @@ import Mybutton from './components/Mybutton';
 
 import {openDatabase} from 'react-native-sqlite-storage';
 import ImagePicker from 'react-native-image-picker';
-//import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 //Connction to access the pre-populated user_db.db
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
@@ -109,7 +109,7 @@ const AddEvent = ({navigation}) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('HomeScreen'),
+                  onPress: () => navigation.navigate('Home'),
                 },
               ],
               {cancelable: false},
