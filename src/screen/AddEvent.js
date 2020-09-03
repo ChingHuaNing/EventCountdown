@@ -99,7 +99,7 @@ const AddEvent = ({navigation}) => {
     );
 
     if (!eventTitle) {
-      alert('Please fill event title');
+      Alert.alert('Please fill event title');
       return;
     }
     // if (!eventDate) {
@@ -111,11 +111,11 @@ const AddEvent = ({navigation}) => {
     //   return;
     // }
     if (!eventVenue) {
-      alert('Please fill event venue');
+      Alert.alert('Please fill event venue');
       return;
     }
     if (!eventDesc) {
-      alert('Please fill event description');
+      Alert.alert('Please fill event description');
       return;
     }
 
@@ -146,7 +146,9 @@ const AddEvent = ({navigation}) => {
               ],
               {cancelable: false},
             );
-          } else alert('Event added failed');
+          } else {
+            Alert.alert('Event added failed');
+          }
         },
       );
     });
@@ -202,8 +204,8 @@ const AddEvent = ({navigation}) => {
                 style={{padding: 10}}
               />
 
-              <View style={{flex: 1}}>
-                <Button title="Show Date Picker" onPress={showDatePicker} />
+              <View style={{flex: 1, flexDirection: 'row', paddingLeft: 40,padding:10}}>
+                <Button title="Pick Your Event Date" onPress={showDatePicker} />
                 <DateTimePickerModal
                   isVisible={isDatePickerVisible}
                   mode="date"
@@ -211,10 +213,11 @@ const AddEvent = ({navigation}) => {
                   onCancel={hideDatePicker}
                   displayFormat="DD/MM/YYYY"
                 />
+                <Text />
               </View>
 
-              <View>
-                <Button title="Show Time Picker" onPress={showTimePicker} />
+              <View style={{flex: 1, flexDirection: 'row', paddingLeft: 40 ,padding:10}}>
+                <Button title="Pick Your Event Time" onPress={showTimePicker} />
                 <DateTimePickerModal
                   isVisible={isTimePickerVisible}
                   mode="time"
@@ -314,5 +317,9 @@ const styles = StyleSheet.create({
 
   switch: {
     paddingLeft: 250,
+  },
+
+  datePicker: {
+    paddingLeft: 40,
   },
 });
