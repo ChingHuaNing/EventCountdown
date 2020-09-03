@@ -40,14 +40,14 @@ function FutureEvent(props) {
     return (
       <View key={item.event_id} style={styles.listItem}>
         <View style={{alignItems: 'center'}}>
-          <ImageBackground
+       {/* <ImageBackground
             source={{uri: item.event_photo}}
-            style={styles.image}>
+            style={styles.image}> */}
             <Text style={{fontWeight: 'bold'}}>title:{item.event_title}</Text>
             <Text style={{color: '#000000'}}>{item.event_date}</Text>
             <Text>{item.event_time}</Text>
             <Text>{item.event_venue}</Text>
-          </ImageBackground>
+          {/* </ImageBackground> */}
         </View>
       </View>
     );

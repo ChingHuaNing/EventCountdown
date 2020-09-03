@@ -16,11 +16,11 @@ import Mytextinput from './components/Mytextinput';
 import Mybutton from './components/Mybutton';
 
 import {openDatabase} from 'react-native-sqlite-storage';
-import ImagePicker from 'react-native-image-picker';
+//import ImagePicker from 'react-native-image-picker';
 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-import DateTimePicker from '@react-native-community/datetimepicker';
+//import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 
 //Connction to access the pre-populated user_db.db
@@ -28,7 +28,7 @@ var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
 const AddEvent = ({navigation}) => {
   let [eventTitle, setEventTitle] = useState('');
-  let [eventPhoto, setEventPhoto] = useState(require('./img/photo.png'));
+  // let [eventPhoto, setEventPhoto] = useState(require('./img/photo.png'));
   let [eventDate, setEventDate] = useState('');
   let [eventTime, setEventTime] = useState('');
   let [eventVenue, setEventVenue] = useState('');
@@ -51,7 +51,7 @@ const AddEvent = ({navigation}) => {
 
   const handleConfirm1 = (date) => {
     console.warn('A date has been picked: ', date);
-    console.log('Date chooseL', date);
+    console.log('Date choose', date);
     hideDatePicker();
 
     eventDate = moment(date).format('YYYY-MM-DD');
@@ -90,7 +90,7 @@ const AddEvent = ({navigation}) => {
   let add_event = () => {
     console.log(
       eventTitle,
-      eventPhoto,
+      //  eventPhoto,
       eventDate,
       eventTime,
       eventVenue,
@@ -121,10 +121,11 @@ const AddEvent = ({navigation}) => {
 
     db.transaction(function (tx) {
       tx.executeSql(
-        'INSERT INTO table_event (event_title, event_photo,event_date,event_time,event_venue,event_desc,event_diary) VALUES (?,?,?,?,?,?,?)',
+        //'INSERT INTO table_event (event_title, event_photo,event_date,event_time,event_venue,event_desc,event_diary) VALUES (?,?,?,?,?,?,?)',
+        'INSERT INTO table_event (event_title,event_date,event_time,event_venue,event_desc,event_diary) VALUES (?,?,?,?,?,?)',
         [
           eventTitle,
-          eventPhoto,
+          //eventPhoto,
           eventDate,
           eventTime,
           eventVenue,
@@ -154,30 +155,32 @@ const AddEvent = ({navigation}) => {
     });
   };
 
-  const options = {
-    title: 'Select Image',
-    storageOptions: {
-      skipBackup: true,
-      path: 'images',
-    },
-  };
+  // const options = {
+  //   title: 'Select Image',
+  //   storageOptions: {
+  //     skipBackup: true,
+  //     path: 'images',
+  //   },
+  // };
 
-  let choosePhoto = () => {
-    ImagePicker.showImagePicker(options, (res) => {
-      console.log('Response = ', res);
+  // let choosePhoto = () => {
+  //   ImagePicker.showImagePicker(options, (res) => {
+  //     console.log('Response = ', res);
 
-      if (res.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (res.error) {
-        console.log('ImagePicker Error: ', res.error);
-      } else if (res.customButton) {
-        console.log('User tapped custom button: ', res.customButton);
-      } else {
-        let source = {uri: res.uri};
-        setEventPhoto(source);
-      }
-    });
-  };
+  //     if (res.didCancel) {
+  //       console.log('User cancelled image picker');
+  //     } else if (res.error) {
+  //       console.log('ImagePicker Error: ', res.error);
+  //     } else if (res.customButton) {
+  //       console.log('User tapped custom button: ', res.customButton);
+  //     } else {
+  //       let source = {uri: res.uri};
+  //       setEventPhoto(source);
+
+  //       console.log('img URLLLLLLLLLLLLLLLLLLLLLLL', source);
+  //     }
+  //   });
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -187,7 +190,7 @@ const AddEvent = ({navigation}) => {
             <KeyboardAvoidingView
               behavior="padding"
               style={{flex: 1, justifyContent: 'space-between'}}>
-              <View
+              {/* <View
                 style={{
                   flex: 1,
                   alignItems: 'center',
@@ -195,7 +198,7 @@ const AddEvent = ({navigation}) => {
                 }}>
                 <Image source={eventPhoto} style={{width: 120, height: 100}} />
                 <Mybutton title="Choose Photo" customClick={choosePhoto} />
-              </View>
+              </View> */}
 
               <Mytextinput
                 label="Title"
