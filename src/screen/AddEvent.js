@@ -75,7 +75,7 @@ const AddEvent = ({navigation}) => {
     console.log('Time chooseL', time);
     hideTimePicker();
 
-    eventTime = moment(time).format('hh:mm:ss');
+    eventTime = moment(time).format('HHmm');
 
     eventTime.toString();
     setEventTime(eventTime);
@@ -202,7 +202,13 @@ const AddEvent = ({navigation}) => {
                 style={{padding: 10}}
               />
 
-              <View style={{flex: 1, flexDirection: 'row', paddingLeft: 40,padding:10}}>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  paddingLeft: 40,
+                  padding: 10,
+                }}>
                 <Button title="Pick Your Event Date" onPress={showDatePicker} />
                 <DateTimePickerModal
                   isVisible={isDatePickerVisible}
@@ -211,18 +217,27 @@ const AddEvent = ({navigation}) => {
                   onCancel={hideDatePicker}
                   displayFormat="DD/MM/YYYY"
                 />
-                <Text />
+
+                <Text style={styles.titleText}>{eventDate}</Text>
               </View>
 
-              <View style={{flex: 1, flexDirection: 'row', paddingLeft: 40 ,padding:10}}>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  paddingLeft: 40,
+                  padding: 10,
+                }}>
                 <Button title="Pick Your Event Time" onPress={showTimePicker} />
                 <DateTimePickerModal
                   isVisible={isTimePickerVisible}
                   mode="time"
                   onConfirm={handleConfirm2}
                   onCancel={hideTimePicker}
-                  //  is24Hour={true}
+                  is24Hour={true}
                 />
+
+                <Text style={styles.titleText}>{eventTime}</Text>
               </View>
 
               {/* <Mytextinput
@@ -269,7 +284,7 @@ const AddEvent = ({navigation}) => {
                   style={styles.switch}
                   trackColor={{false: '#767577', true: '#81b0ff'}}
                   thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-                  ios_backgroundColor="#3e3e3e"
+                  //  ios_backgroundColor="#3e3e3e"
                   onValueChange={toggleSwitch}
                   value={isEnabled}
                 />
@@ -319,5 +334,10 @@ const styles = StyleSheet.create({
 
   datePicker: {
     paddingLeft: 40,
+  },
+
+  button: {
+    backgroundColor: '#f5cf36',
+    color: '#ffffff',
   },
 });
