@@ -19,6 +19,7 @@ import {openDatabase} from 'react-native-sqlite-storage';
 import ImagePicker from 'react-native-image-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
 
 //Connction to access the pre-populated user_db.db
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
@@ -26,51 +27,61 @@ var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 const AddEvent = ({navigation}) => {
   let [eventTitle, setEventTitle] = useState('');
   let [eventPhoto, setEventPhoto] = useState(require('./img/photo.png'));
-  //  let [eventDate, setEventDate] = useState('');
-  // let [eventTime, setEventTime] = useState('');
+  let [eventDate, setEventDate] = useState('');
+  let [eventTime, setEventTime] = useState('');
   let [eventVenue, setEventVenue] = useState('');
   let [eventDesc, setEventDesc] = useState('');
   let [eventDiary, setEventDiary] = useState('');
   let [isEnabled, setIsEnabled] = useState(false);
-  let [date, setDate] = useState(new Date(1598051730000));
-  let [mode, setMode] = useState('date');
-  let [show, setShow] = useState(false);
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'android');
-    setDate(currentDate);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+    console.log('show date picker');
   };
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
   };
 
-  const showDatepicker = () => {
-    console.log('show datepicker');
-    showMode('date');
+  const handleConfirm1 = (date) => {
+    console.warn('A date has been picked: ', date);
+    console.log('Date chooseL', date);
+    hideDatePicker();
+
+    eventDate = moment(date).format('YYYY-MM-DD');
+    eventDate.toString();
+    console.log(eventDate);
+
+    setEventDate(eventDate);
+
+    console.log(eventDate);
   };
 
-  const showTimepicker = () => {
-    console.log('show timepicker');
-    showMode('time');
+  const showTimePicker = () => {
+    setTimePickerVisibility(true);
+    console.log('show time picker');
   };
 
-  // const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const hideTimePicker = () => {
+    setTimePickerVisibility(false);
+  };
 
-  // const showDatePicker = () => {
-  //   setDatePickerVisibility(true);
-  // };
+  const handleConfirm2 = (time) => {
+    console.warn('A time has been picked: ', time);
+    console.log('Time chooseL', time);
+    hideTimePicker();
 
-  // const hideDatePicker = () => {
-  //   setDatePickerVisibility(false);
-  // };
+    eventTime = moment(time).format('hh:mm:ss');
 
-  // const handleConfirm = (date) => {
-  //   console.warn("A date has been picked: ", date);
-  //   hideDatePicker();
-  // };
+    eventTime.toString();
+    setEventTime(eventTime);
+
+    console.log(eventTime);
+  };
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
@@ -89,14 +100,14 @@ const AddEvent = ({navigation}) => {
       alert('Please fill event title');
       return;
     }
-    if (!eventDate) {
-      alert('Please fill event date');
-      return;
-    }
-    if (!eventTime) {
-      alert('Please fill event time');
-      return;
-    }
+    // if (!eventDate) {
+    //   alert('Please fill event date');
+    //   return;
+    // }
+    // if (!eventTime) {
+    //   alert('Please fill event time');
+    //   return;
+    // }
     if (!eventVenue) {
       alert('Please fill event venue');
       return;
@@ -158,25 +169,14 @@ const AddEvent = ({navigation}) => {
       } else if (res.customButton) {
         console.log('User tapped custom button: ', res.customButton);
       } else {
-        // const source = { uri: res.uri };
-
-        // You can also display the image using data:
-        // const source = { uri: 'data:image/jpeg;base64,' + res.data };
-
-        //   this.setState({
-        //   photo: source,
-        //  });
-
         let source = {uri: res.uri};
         setEventPhoto(source);
-
-        // return source;
       }
     });
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={styles.container}>
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <View style={{flex: 1}}>
           <ScrollView keyboardShouldPersistTaps="handled">
@@ -200,32 +200,27 @@ const AddEvent = ({navigation}) => {
                 style={{padding: 10}}
               />
 
-              {/* <View>
-                    <Button title="Show Date Picker" onPress={showDatePicker} />
-                    <DateTimePickerModal
-                      isVisible={isDatePickerVisible}
-                      mode="date"
-                      onConfirm={handleConfirm}
-                      onCancel={hideDatePicker}
-                    />
-                  </View> */}
+              <View style={{flex: 1}}>
+                <Button title="Show Date Picker" onPress={showDatePicker} />
+                <DateTimePickerModal
+                  isVisible={isDatePickerVisible}
+                  mode="date"
+                  onConfirm={handleConfirm1}
+                  onCancel={hideDatePicker}
+                  displayFormat="DD/MM/YYYY"
+                />
+              </View>
 
               <View>
-                <Button onPress={showDatepicker} title="Show date picker!" />
-              </View>
-              <View>
-                <Button onPress={showTimepicker} title="Show time picker!" />
-              </View>
-              {show && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  mode={mode}
-                  is24Hour={true}
-                  display="default"
-                  onChange={onChange}
+                <Button title="Show Time Picker" onPress={showTimePicker} />
+                <DateTimePickerModal
+                  isVisible={isTimePickerVisible}
+                  mode="time"
+                  onConfirm={handleConfirm2}
+                  onCancel={hideTimePicker}
+                  //  is24Hour={true}
                 />
-              )}
+              </View>
 
               {/* <Mytextinput
                label = "Date"
@@ -252,10 +247,6 @@ const AddEvent = ({navigation}) => {
                 placeholder="Enter Event Venue"
                 onChangeText={(eventVenue) => setEventVenue(eventVenue)}
                 maxLength={225}
-                //   numberOfLines={5}
-                //   multiline={true}
-
-                //  style={{ textAlignVertical: 'top', padding: 10 }}
                 style={{padding: 10}}
               />
 
@@ -291,16 +282,6 @@ const AddEvent = ({navigation}) => {
                 style={{textAlignVertical: 'top', padding: 10}}
               />
 
-              <Mytextinput
-                label="Diary"
-                placeholder="Enter Event Diary"
-                onChangeText={(eventDiary) => setEventDiary(eventDiary)}
-                maxLength={225}
-                numberOfLines={5}
-                multiline={true}
-                style={{textAlignVertical: 'top', padding: 10}}
-              />
-
               <Mybutton title="Submit" customClick={add_event} />
             </KeyboardAvoidingView>
           </ScrollView>
@@ -313,6 +294,10 @@ const AddEvent = ({navigation}) => {
 export default AddEvent;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
   baseText: {
     fontFamily: 'Cochin',
   },
