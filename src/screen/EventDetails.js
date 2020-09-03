@@ -14,41 +14,25 @@ import moment from 'moment';
 //Connection to access the pre-populated event_db.db
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
-const EventDetails = () => {
-  let [eventData, setEventData] = useState('');
-  let [theDuration, setDuration] = useState(0);
-
-  useEffect(() => {
-    var inputEventId = 1;
-
-    // const {inputEventId} = route.params;
-    console.log(inputEventId);
-    db.transaction((tx) => {
-      tx.executeSql(
-        'SELECT * FROM table_event where event_id = ?',
-        [inputEventId],
-        (tx, results) => {
-          var len = results.rows.length;
-          if (len > 0) {
-            duration = calculateDuration();
-            console.log('Use Effect Duration = ', duration);
-            setDuration(duration);
-            setEventData(results.rows.item(0));
-          } else {
-            alert('No event found');
-          }
-        },
-      );
-    });
-  }, []);
-
+const EventDetails = ({route}) => {
+  const {inputEventId} = route.params;
+  const {event_date} = route.params;
+  const {event_time} = route.params;
+  let event_day = event_date.concat(
+    ' ',
+    event_time.substr(0, 2),
+    ':',
+    event_time.substr(2, 2),
+  );
+  console.log('EventDay = ', event_day);
   let calculateDuration = () => {
-    var date = moment().format('YYYY-MM-DD hh:mm:ss+04:00');
+    var date = moment().utcOffset('+0800').format('YYYY-MM-DD HH:mm:ss');
     console.log('Date = ', date);
-    var expirydate = '2020-09-04 22:00:00';
-    console.log('ExDate = ', expirydate);
-    var diff = moment.duration(moment(expirydate).diff(moment(date)));
-    var hours = parseInt(diff.hours());
+    var eventDate = moment(event_day).format('YYYY-MM-DD HH:mm');
+    console.log('EventDate = ', eventDate);
+    var diff = moment.duration(moment(eventDate).diff(moment(date)));
+
+    var hours = parseInt(diff.asHours());
     var minutes = parseInt(diff.minutes());
     var seconds = parseInt(diff.seconds());
 
@@ -59,29 +43,48 @@ const EventDetails = () => {
     console.log('Duration = ', duration);
     return duration;
   };
+  let [eventData, setEventData] = useState('');
+  let timing = calculateDuration();
+
+  useEffect(() => {
+    console.log(inputEventId);
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM table_event where event_id = ?',
+        [inputEventId],
+        (tx, results) => {
+          var len = results.rows.length;
+          if (len > 0) {
+            setEventData(results.rows.item(0));
+          } else {
+            alert('No event found');
+          }
+        },
+      );
+    });
+  }, []);
 
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <View style={{flex: 1}}>
           <View style={{marginLeft: 35, marginRight: 35, marginTop: 10}}>
-            {/* <Image
-              resizeMode="contain"
-              style={styles.image}
-              source={eventData.eventPhoto}
-            /> */}
-            <Text style={styles.centered}> Days until Merdeka </Text>
-            <Text>Duration: {theDuration}</Text>
+            <Text>Days until Merdeka </Text>
+            <Text>First Duration: {duration}</Text>
+            <Text>Duration: {timing}</Text>
+
             <CountDown
-              until={theDuration}
+              running={true}
+              until={timing}
               onFinish={() => alert('finished')}
               size={30}
               digitStyle={{backgroundColor: '#FFF'}}
             />
+
             <Text>Name: {eventData.event_title}</Text>
             <Text>Date: {eventData.event_date} </Text>
             <Text>Time: {eventData.event_time} </Text>
-            <Text>Place : {eventData.event_venue} </Text>
+            <Text>Place: {eventData.event_venue} </Text>
             <Text>Description: {eventData.event_diary} </Text>
           </View>
         </View>
