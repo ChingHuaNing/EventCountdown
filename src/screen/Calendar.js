@@ -5,6 +5,7 @@ import {
   Button,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
   FlatList,
 } from 'react-native';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
@@ -14,88 +15,98 @@ import {openDatabase} from 'react-native-sqlite-storage';
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
 export default function CalendarScreen({navigation}) {
+  let [selectedEvents, setSelectedEvents] = useState([]);
   let [selectedDate, setSelectedDate] = useState('');
   let [markedDate, setMarkedDate] = useState({});
   let [eventItemList, setEventItemList] = useState([]);
+  let [eventDates, setEventDates] = useState([]);
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM event', [], (tx, result) => {
+      tx.executeSql('SELECT * FROM table_event', [], (tx, result) => {
         if (result.rows.length > 0) {
           var tempEventList = [];
           for (i = 0; i < result.rows.length; i++) {
             tempEventList.push(result.rows.item(i));
             setEventItemList(tempEventList);
-            console.log(eventItemList);
           }
+          let markedDates = {};
+
+          let event = eventItemList.map((item) => item.event_date);
+          setEventDates(event);
+          console.log(eventDates);
         }
       });
     });
   }, []);
 
   useEffect(() => {
-    const markedDateOnCalendar = () => {
-      let markedDates = {};
-      let eventDates = eventItemList.map((item) => item.event_date);
-      console.log(eventDates);
+    let markedDates = {};
 
-      for (i = 0; i < eventDates.length; i++) {
-        markedDates[eventDates[i]] = {
-          selected: true,
-          marked: true,
-          selectedColor: '#ffff80',
-        };
-        console.log(markedDates);
-      }
+    for (i = 0; i < eventDates.length; i++) {
+      markedDates[eventDates[i]] = {
+        selected: true,
+        marked: true,
+        dotColor: '#000',
+        selectedColor: '#ffff80',
+      };
+    }
+    setMarkedDate(markedDates);
+  }, []);
 
-      setMarkedDate(markedDates);
-    };
-    markedDateOnCalendar();
-  }, [eventItemList]);
+  let listEventItem = (item) => {
+    return (
+      <TouchableOpacity style={styles.item}>
+        <View>
+          <Text style={styles.text}>Event: {item.event_title}</Text>
+          <Text style={styles.text}>Time: {item.event_time}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
-  // let listEventItem = (item) => {
-  //   return (
-  //     <View>
-  //       <Text>{item.event_name}</Text>
-  //     </View>
-  //   );
-  // };
-
-  // select date
-  let getOnPressEvent = (day) => {
+  // when date is selected
+  const getOnPressEvent = (day) => {
+    let markedDate = {};
     let selectedDate = moment(day.dateString);
     selectedDate = selectedDate.format('YYYY-MM-DD');
     setSelectedDate(selectedDate);
-    console.log(selectedDate);
 
-    let eventDate = eventItemList.map((item) => item.event_date);
-
-    for (i = 0; i < eventDate.length; i++) {
-      if (selectedDate == eventDate[i]) {
-        eventItemList.map((item) => {});
-      }
-    }
+    //filter event items
+    let tempSelectedEvents = eventItemList.filter(
+      (item) => item.event_date === selectedDate,
+    );
+    setSelectedEvents(tempSelectedEvents);
   };
 
   return (
     <View style={styles.container}>
-      <Calendar
-        onDayPress={(day) => getOnPressEvent(day)}
-        hideArrows={false}
-        enableSwipeMonths={true}
-        markedDates={markedDate}
-        theme={{
-          calendarBackground: '#ffffff',
-          textSectionTitleColor: '#b6c1cd',
-          selectedDayBackgroundColor: '#00adf5',
-          selectedDayTextColor: '#000000',
-          todayTextColor: '#00adf5',
-          dayTextColor: '#2d4150',
-          textDisabledColor: '#d9e1e8',
-          dotColor: '#000000',
-          selectedDotColor: '#ffffff',
-        }}
-      />
+      <View>
+        <Calendar
+          onDayPress={(day) => getOnPressEvent(day)}
+          hideArrows={false}
+          enableSwipeMonths={true}
+          markedDates={markedDate}
+          theme={{
+            calendarBackground: '#ffffff',
+            textSectionTitleColor: '#b6c1cd',
+            selectedDayBackgroundColor: '#00adf5',
+            selectedDayTextColor: '#000000',
+            todayTextColor: '#00adf5',
+            dayTextColor: '#2d4150',
+            textDisabledColor: '#d9e1e8',
+            dotColor: '#000000',
+            selectedDotColor: '#ffffff',
+          }}
+        />
+      </View>
+      <View style={styles.listContainer}>
+        <FlatList
+          data={selectedEvents}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => listEventItem(item)}
+        />
+      </View>
     </View>
   );
 }
@@ -104,5 +115,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+  },
+  listContainer: {
+    flex: 1,
+    marginTop: 50,
+  },
+  text: {
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  item: {
+    padding: 10,
+    marginVertical: 8,
+    marginHorizontal: 20,
+    backgroundColor: '#FDFDA1',
   },
 });
