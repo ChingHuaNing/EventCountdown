@@ -15,17 +15,14 @@ import moment from 'moment';
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
 const EventDetails = () => {
-  //let [duration, setDuration] = useState(0);
-
-  //add this to Home
-  //let [inputEventId, setInputEventId] = useState('');
-  let [eventData, setEventData] = useState({});
-  let [duration, setDuration] = useState(0);
+  let [eventData, setEventData] = useState('');
+  let [theDuration, setDuration] = useState(0);
 
   useEffect(() => {
     var inputEventId = 1;
+
+    // const {inputEventId} = route.params;
     console.log(inputEventId);
-    setEventData({});
     db.transaction((tx) => {
       tx.executeSql(
         'SELECT * FROM table_event where event_id = ?',
@@ -33,7 +30,9 @@ const EventDetails = () => {
         (tx, results) => {
           var len = results.rows.length;
           if (len > 0) {
-            calculateDuration;
+            duration = calculateDuration();
+            console.log('Use Effect Duration = ', duration);
+            setDuration(duration);
             setEventData(results.rows.item(0));
           } else {
             alert('No event found');
@@ -44,19 +43,23 @@ const EventDetails = () => {
   }, []);
 
   let calculateDuration = () => {
-    var date = moment().format('YYYY-MM-DD hh:mm:ss+08:00');
-
-    var expirydate = '2020-09-05 11:21:00';
+    var date = moment().format('YYYY-MM-DD hh:mm:ss+04:00');
+    console.log('Date = ', date);
+    var expirydate = '2020-09-04 22:00:00';
+    console.log('ExDate = ', expirydate);
     var diff = moment.duration(moment(expirydate).diff(moment(date)));
-    var hours = parseInt(diff.asHours());
+    var hours = parseInt(diff.hours());
     var minutes = parseInt(diff.minutes());
     var seconds = parseInt(diff.seconds());
 
-    var time = hours * 60 * 60 + minutes * 60 + seconds;
+    console.log('Hours = ', hours);
+    console.log('Minutes = ', minutes);
+    console.log('Seconds = ', seconds);
+    var duration = hours * 60 * 60 + minutes * 60 + seconds;
     console.log('Duration = ', duration);
-    setDuration(time);
-    console.log('Duration = ', duration);
+    return duration;
   };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -65,11 +68,12 @@ const EventDetails = () => {
             {/* <Image
               resizeMode="contain"
               style={styles.image}
-              source={require('../images/malaysia.png')}
+              source={eventData.eventPhoto}
             /> */}
             <Text style={styles.centered}> Days until Merdeka </Text>
+            <Text>Duration: {theDuration}</Text>
             <CountDown
-              until={duration}
+              until={theDuration}
               onFinish={() => alert('finished')}
               size={30}
               digitStyle={{backgroundColor: '#FFF'}}
@@ -85,6 +89,7 @@ const EventDetails = () => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
