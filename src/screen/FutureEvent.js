@@ -90,7 +90,13 @@ function FutureEvent(props) {
       <Text style={styles.text}>Home Tab</Text>
 
       <TouchableOpacity // add button to see event details (temporary)
-        onPress={() => navigation.navigate('EventDetails')}>
+        onPress={() =>
+          navigation.navigate('EventDetails', {
+            inputEventId: 1, //event_id
+            event_date: '2020-09-05', //event_date
+            event_time: '0300', //event_time
+          })
+        }>
         <Text>EventDetails</Text>
       </TouchableOpacity>
 
