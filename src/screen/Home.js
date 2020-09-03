@@ -17,7 +17,8 @@ const Home = ({navigation}) => {
             console.log('no item');
             txn.executeSql('DROP TABLE IF EXISTS table_event', []);
             txn.executeSql(
-              'CREATE TABLE IF NOT EXISTS table_event(event_id INTEGER PRIMARY KEY AUTOINCREMENT, event_title VARCHAR(20), event_photo blob, event_date VARCHAR(10),event_time VARCHAR(5),event_venue VARCHAR(50),event_desc VARCHAR(255),event_diary VARCHAR(2000))',
+              //'CREATE TABLE IF NOT EXISTS table_event(event_id INTEGER PRIMARY KEY AUTOINCREMENT, event_title VARCHAR(20), event_photo blob, event_date VARCHAR(10),event_time VARCHAR(5),event_venue VARCHAR(50),event_desc VARCHAR(255),event_diary VARCHAR(2000))',
+              'CREATE TABLE IF NOT EXISTS table_event(event_id INTEGER PRIMARY KEY AUTOINCREMENT, event_title VARCHAR(20), event_date VARCHAR(10),event_time VARCHAR(5),event_venue VARCHAR(50),event_desc VARCHAR(255),event_diary VARCHAR(2000))',
               [],
             );
           }
