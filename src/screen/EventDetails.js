@@ -16,18 +16,14 @@ import moment from 'moment';
 //Connection to access the pre-populated event_db.db
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
-const EventDetails = ({route}) => {
+const EventDetails = ({route, navigation}) => {
   //get parameters from previous page
   const {inputEventId} = route.params;
   const {event_date} = route.params;
   const {event_time} = route.params;
   //concat the event date and time to get the event day
-  let event_day = event_date.concat(
-    ' ',
-    event_time.substr(0, 2),
-    ':',
-    event_time.substr(2, 2),
-  );
+  let event_day = event_date.concat(' ', event_time);
+
   console.log('EventDay = ', event_day);
   //calculate the duration
   let calculateDuration = () => {
