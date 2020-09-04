@@ -24,16 +24,27 @@ function FutureEvent(props) {
   let [eventId, setEventId] = useState('');
 
   useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM table_event', [], (tx, results) => {
-        var temp = [];
-        for (let i = 0; i < results.rows.length; ++i) {
-          console.log(results.rows.item(i));
-          temp.push(results.rows.item(i));
-        }
-        setFlatListItems(temp);
-      });
-    });
+    const unsubscribe = navigation.addListener(
+      'focus',
+      () => {
+        db.transaction((tx) => {
+          tx.executeSql(
+            'SELECT * FROM table_event ORDER BY event_date ASC',
+            [],
+            (tx, results) => {
+              var temp = [];
+              for (let i = 0; i < results.rows.length; ++i) {
+                console.log(results.rows.item(i));
+                temp.push(results.rows.item(i));
+              }
+              setFlatListItems(temp);
+            },
+          );
+        });
+        return unsubscribe;
+      },
+      [navigation],
+    );
   }, []);
 
   let listItemView = (item) => {

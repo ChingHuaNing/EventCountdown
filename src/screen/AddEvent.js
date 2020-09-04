@@ -150,7 +150,7 @@ const AddEvent = ({navigation}) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('Home'),
+                  onPress: () => navigation.navigate('FutureEvent'),
                 },
               ],
               {cancelable: false},
