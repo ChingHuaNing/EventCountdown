@@ -23,65 +23,64 @@ import moment from 'moment';
 //Connction to access the pre-populated event_db.db
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
-// useEffect( ()=> {
-
-// const {}
-
-//  // console.log(inputUserId);
-
-//   db.transaction((tx) => {
-//     tx.executeSql(
-//       'SELECT * FROM table_user where user_id = ?',
-//       [inputUserId],
-//       (tx, results) => {
-//         var len = results.rows.length;
-//         if (len > 0) {
-//           let res = results.rows.item(0);
-//           updateAllStates(res.user_name, res.user_contact, res.user_address);
-//         } else {
-//           alert('No user found');
-//           updateAllStates('', '', '');
-//         }
-//       }
-//     );
-//   });
-
-// });
-
 const EditEvent = ({navigation}) => {
-  let [eventData, setEventData] = useState({});
+  let [eventTitle, setEventTitle] = useState('');
+  let [eventDate, setEventDate] = useState('');
+  let [eventTime, setEventTime] = useState('');
+  let [eventVenue, setEventVenue] = useState('');
+  let [eventDesc, setEventDesc] = useState('');
+  let [eventDiary, setEventDiary] = useState('');
+  let [inputEventId, setInputEventId] = useState(2);
+
+  let [isEnabled, setIsEnabled] = useState(false);
+
+  let loadAllData = (
+    eventTitle,
+    eventDate,
+    eventTime,
+    eventVenue,
+    eventDesc,
+    eventDiary,
+  ) => {
+    //  let eventTitleTemp = eventTitle.toString();
+
+    setEventTitle(eventTitle);
+    setEventDate(eventDate);
+    setEventTime(eventTime);
+    setEventVenue(eventVenue);
+    setEventDesc(eventDesc);
+    setEventDiary(eventDiary);
+  };
 
   useEffect(() => {
-    var inputEventId = 1;
     console.log(inputEventId);
-   // setEventData({});
+
     db.transaction((tx) => {
       tx.executeSql(
         'SELECT * FROM table_event where event_id = ?',
         [inputEventId],
         (tx, results) => {
           var len = results.rows.length;
+
           if (len > 0) {
-            calculateDuration;
-            setEventData(results.rows.item(0));
+            let res = results.rows.item(0);
+            console.log('Result', results.rows.item(0));
+            loadAllData(
+              res.event_title,
+              res.event_date,
+              res.event_time,
+              res.event_venue,
+              res.event_desc,
+              res.event_diary,
+            );
           } else {
             alert('No event found');
+            loadAllData('', '', '', '', '', '');
           }
         },
       );
     });
-
-    console.log(eventData);
   }, []);
-
-  let [eventTitle, setEventTitle] = useState(eventData.event_title);
-  //let [eventPhoto, setEventPhoto] = useState(eventData.event_photo);
-  let [eventDate, setEventDate] = useState(eventData.event_date);
-  let [eventTime, setEventTime] = useState(eventData.event_time);
-  let [eventVenue, setEventVenue] = useState(eventData.event_venue);
-  let [eventDesc, setEventDesc] = useState(eventData.event_desc);
-  let [eventDiary, setEventDiary] = useState(eventData.event_diary);
-  let [isEnabled, setIsEnabled] = useState(false);
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
@@ -120,10 +119,10 @@ const EditEvent = ({navigation}) => {
 
   const handleConfirm2 = (time) => {
     console.warn('A time has been picked: ', time);
-    console.log('Time chooseL', time);
+    console.log('Time choose', time);
     hideTimePicker();
 
-    eventTime = moment(time).format('HHmm');
+    eventTime = moment(time).format('HH:mm');
 
     eventTime.toString();
     setEventTime(eventTime);
@@ -134,28 +133,18 @@ const EditEvent = ({navigation}) => {
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   let edit_event = () => {
-    console.log(
-      eventTitle,
-     // eventPhoto,
-      eventDate,
-      eventTime,
-      eventVenue,
-      eventDesc,
-      eventDiary,
-    );
-
     if (!eventTitle) {
       Alert.alert('Please fill event title');
       return;
     }
-    // if (!eventDate) {
-    //   alert('Please fill event date');
-    //   return;
-    // }
-    // if (!eventTime) {
-    //   alert('Please fill event time');
-    //   return;
-    // }
+    if (!eventDate) {
+      Alert.alert('Please pick an event date');
+      return;
+    }
+    if (!eventTime) {
+      Alert.alert('Please pick an event time');
+      return;
+    }
     if (!eventVenue) {
       Alert.alert('Please fill event venue');
       return;
@@ -165,26 +154,24 @@ const EditEvent = ({navigation}) => {
       return;
     }
 
-    db.transaction(function (tx) {
+    db.transaction((tx) => {
       tx.executeSql(
-       // 'INSERT INTO table_event (event_title, event_photo,event_date,event_time,event_venue,event_desc,event_diary) VALUES (?,?,?,?,?,?,?)',
-        'INSERT INTO table_event (event_title,event_date,event_time,event_venue,event_desc,event_diary) VALUES (?,?,?,?,?,?)',
+        'UPDATE table_event set event_title=?, event_date=? , event_time=? , event_venue=? , event_desc = ? , event_diary=? where event_id=?',
         [
           eventTitle,
-       //   eventPhoto,
           eventDate,
           eventTime,
           eventVenue,
           eventDesc,
           eventDiary,
+          inputEventId,
         ],
 
         (tx, results) => {
-          console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
             Alert.alert(
               'Success',
-              'Event Added Successfully',
+              'Event edited Successfully',
               [
                 {
                   text: 'Ok',
@@ -194,37 +181,12 @@ const EditEvent = ({navigation}) => {
               {cancelable: false},
             );
           } else {
-            Alert.alert('Event added failed');
+            Alert.alert('Event edit failed');
           }
         },
       );
     });
   };
-
-  // const options = {
-  //   title: 'Select Image',
-  //   storageOptions: {
-  //     skipBackup: true,
-  //     path: 'images',
-  //   },
-  // };
-
-  // let choosePhoto = () => {
-  //   ImagePicker.showImagePicker(options, (res) => {
-  //     console.log('Response = ', res);
-
-  //     if (res.didCancel) {
-  //       console.log('User cancelled image picker');
-  //     } else if (res.error) {
-  //       console.log('ImagePicker Error: ', res.error);
-  //     } else if (res.customButton) {
-  //       console.log('User tapped custom button: ', res.customButton);
-  //     } else {
-  //       let source = {uri: res.uri};
-  //       setEventPhoto(source);
-  //     }
-  //   });
-  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -234,21 +196,12 @@ const EditEvent = ({navigation}) => {
             <KeyboardAvoidingView
               behavior="padding"
               style={{flex: 1, justifyContent: 'space-between'}}>
-              {/* <View
-                style={{
-                  flex: 1,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image source={eventPhoto} style={{width: 120, height: 100}} />
-                <Mybutton title="Choose Photo" customClick={choosePhoto} />
-              </View> */}
-
               <Mytextinput
                 label="Title"
-                placeholder={eventTitle}
+                value={eventTitle}
+                placeholder="Enter Event Title"
                 onChangeText={(eventTitle) => setEventTitle(eventTitle)}
-                style={{padding: 10}}
+                style={{padding: 10, fontSize: 20}}
               />
 
               <View
@@ -289,29 +242,10 @@ const EditEvent = ({navigation}) => {
                 <Text style={styles.titleText}>{eventTime}</Text>
               </View>
 
-              {/* <Mytextinput
-               label = "Date"
-                placeholder="Enter Event Date"
-                 onChangeText={(eventDate) => setEventDate(eventDate)}
-                 maxLength={10}
-                 keyboardType="numeric"
-                 style={{ padding: 10 }}
-               />
-
-               <Mytextinput
-                 label = "Time"
-                 placeholder="Enter Event Time"
-                 onChangeText={(eventTime) => setEventTime(eventTime)}
-                 maxLength={225}
-                 numberOfLines={5}
-                 multiline={true}
-                 style={{ textAlignVertical: 'top', padding: 10 }}
-               style={{ padding: 10 }}
-               /> */}
-
               <Mytextinput
                 label="Venue"
                 placeholder="Enter Event Venue"
+                value={eventVenue}
                 onChangeText={(eventVenue) => setEventVenue(eventVenue)}
                 maxLength={225}
                 style={{padding: 10}}
@@ -320,6 +254,7 @@ const EditEvent = ({navigation}) => {
               <Mytextinput
                 label="Description"
                 placeholder="Enter Event Description"
+                value={eventDesc}
                 onChangeText={(eventDesc) => setEventDesc(eventDesc)}
                 maxLength={225}
                 numberOfLines={5}
@@ -333,7 +268,6 @@ const EditEvent = ({navigation}) => {
                   style={styles.switch}
                   trackColor={{false: '#767577', true: '#81b0ff'}}
                   thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-                  //  ios_backgroundColor="#3e3e3e"
                   onValueChange={toggleSwitch}
                   value={isEnabled}
                 />
@@ -342,6 +276,7 @@ const EditEvent = ({navigation}) => {
               <Mytextinput
                 label="Diary"
                 placeholder="Enter Event Diary"
+                value={eventDiary}
                 onChangeText={(eventDiary) => setEventDiary(eventDiary)}
                 maxLength={225}
                 numberOfLines={5}
@@ -349,7 +284,7 @@ const EditEvent = ({navigation}) => {
                 style={{textAlignVertical: 'top', padding: 10}}
               />
 
-              <Mybutton title="Submit" customClick={edit_event} />
+              <Mybutton title="Edit" customClick={edit_event} />
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
