@@ -15,9 +15,11 @@ import moment from 'moment';
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
 const EventDetails = ({route}) => {
+  //get parameters from previous page
   const {inputEventId} = route.params;
   const {event_date} = route.params;
   const {event_time} = route.params;
+  //concat the event date and time to get the event day
   let event_day = event_date.concat(
     ' ',
     event_time.substr(0, 2),
@@ -25,6 +27,7 @@ const EventDetails = ({route}) => {
     event_time.substr(2, 2),
   );
   console.log('EventDay = ', event_day);
+  //calculate the duration
   let calculateDuration = () => {
     var date = moment().utcOffset('+0800').format('YYYY-MM-DD HH:mm:ss');
     console.log('Date = ', date);
@@ -66,27 +69,33 @@ const EventDetails = ({route}) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1, backgroundColor: 'white'}}>
-        <View style={{flex: 1}}>
-          <View style={{marginLeft: 35, marginRight: 35, marginTop: 10}}>
-            <Text>Days until Merdeka </Text>
-            <Text>First Duration: {duration}</Text>
-            <Text>Duration: {timing}</Text>
+      <View style={styles.container}>
+        <View style={{marginLeft: 10, marginRight: 10, marginTop: 10}}>
+          <Text style={styles.heading}>
+            Days until {eventData.event_title}{' '}
+          </Text>
 
-            <CountDown
-              running={true}
-              until={timing}
-              onFinish={() => alert('finished')}
-              size={30}
-              digitStyle={{backgroundColor: '#FFF'}}
-            />
+          <Text style={styles.details}>Duration: {timing}</Text>
 
-            <Text>Name: {eventData.event_title}</Text>
-            <Text>Date: {eventData.event_date} </Text>
-            <Text>Time: {eventData.event_time} </Text>
-            <Text>Place: {eventData.event_venue} </Text>
-            <Text>Description: {eventData.event_diary} </Text>
-          </View>
+          <CountDown
+            running={true}
+            until={timing}
+            onFinish={() => alert('finished')}
+            size={30}
+            digitStyle={{backgroundColor: '#FFF'}}
+          />
+
+          <Text style={styles.details}>
+            Event Title: {eventData.event_title}
+          </Text>
+          <Text style={styles.details}>Event Date: {eventData.event_date}</Text>
+          <Text style={styles.details}>Event Time: {eventData.event_time}</Text>
+          <Text style={styles.details}>
+            Event Venue: {eventData.event_venue}
+          </Text>
+          <Text style={styles.details}>
+            Description: {eventData.event_diary}
+          </Text>
         </View>
       </View>
     </SafeAreaView>
@@ -95,15 +104,21 @@ const EventDetails = ({route}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ffffff',
   },
-  text: {
+  heading: {
+    textAlign: 'center',
+    padding: 20,
     color: '#101010',
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  details: {
+    padding: 5,
+    color: '#101010',
+    fontSize: 16,
   },
 });
 
