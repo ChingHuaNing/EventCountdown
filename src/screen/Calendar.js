@@ -1,14 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {Calendar} from 'react-native-calendars';
 import moment from 'moment';
 import {openDatabase} from 'react-native-sqlite-storage';
 
@@ -17,10 +9,10 @@ var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 export default function CalendarScreen({route, navigation}) {
   let [selectedEvents, setSelectedEvents] = useState([]);
   let [selectedDate, setSelectedDate] = useState('');
-  let [markedDate, setMarkedDate] = useState({});
   let [eventItemList, setEventItemList] = useState([]);
   let [eventDates, setEventDates] = useState([]);
 
+  //Retrieve events
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql('SELECT * FROM table_event', [], (tx, result) => {
@@ -35,6 +27,7 @@ export default function CalendarScreen({route, navigation}) {
     });
   }, []);
 
+  // Retrieve event_dates
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql('SELECT event_date FROM table_event', [], (tx, result) => {
@@ -44,15 +37,14 @@ export default function CalendarScreen({route, navigation}) {
             tempList.push(result.rows.item(i));
           }
           setEventDates(tempList);
-          console.log('Event Database', eventDates);
         }
       });
     });
   }, []);
 
+  // Mark dates on calendar
   const markDates = () => {
     const markedDates = {};
-    console.log(eventDates.length);
 
     for (i = 0; i < eventDates.length; i++) {
       markedDates[eventDates[i].event_date] = {
@@ -62,9 +54,7 @@ export default function CalendarScreen({route, navigation}) {
         selectedColor: '#ffff80',
       };
     }
-    console.log('Event', eventDates);
     console.log('MarkedDates', markedDates);
-    //setMarkedDate(markedDates);
     return markedDates;
   };
 
