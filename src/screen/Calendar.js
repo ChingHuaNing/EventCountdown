@@ -14,7 +14,7 @@ import {openDatabase} from 'react-native-sqlite-storage';
 
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
-export default function CalendarScreen({navigation}) {
+export default function CalendarScreen({route, navigation}) {
   let [selectedEvents, setSelectedEvents] = useState([]);
   let [selectedDate, setSelectedDate] = useState('');
   let [markedDate, setMarkedDate] = useState({});
@@ -30,29 +30,43 @@ export default function CalendarScreen({navigation}) {
             tempEventList.push(result.rows.item(i));
             setEventItemList(tempEventList);
           }
-          let markedDates = {};
-
-          let event = eventItemList.map((item) => item.event_date);
-          setEventDates(event);
-          console.log(eventDates);
         }
       });
     });
   }, []);
 
   useEffect(() => {
-    let markedDates = {};
+    db.transaction((tx) => {
+      tx.executeSql('SELECT event_date FROM table_event', [], (tx, result) => {
+        if (result.rows.length > 0) {
+          var tempList = [];
+          for (i = 0; i < result.rows.length; i++) {
+            tempList.push(result.rows.item(i));
+            setEventDates(tempList);
+            console.log('Event Database', eventDates);
+          }
+        }
+      });
+    });
+  }, []);
+
+  const markDates = () => {
+    const markedDates = {};
+    console.log(eventDates.length);
 
     for (i = 0; i < eventDates.length; i++) {
-      markedDates[eventDates[i]] = {
+      markedDates[eventDates[i].event_date] = {
         selected: true,
         marked: true,
         dotColor: '#000',
         selectedColor: '#ffff80',
       };
     }
-    setMarkedDate(markedDates);
-  }, []);
+    console.log('Event', eventDates);
+    console.log('MarkedDates', markedDates);
+    //setMarkedDate(markedDates);
+    return markedDates;
+  };
 
   let listEventItem = (item) => {
     return (
@@ -86,7 +100,7 @@ export default function CalendarScreen({navigation}) {
           onDayPress={(day) => getOnPressEvent(day)}
           hideArrows={false}
           enableSwipeMonths={true}
-          markedDates={markedDate}
+          markedDates={markDates()}
           theme={{
             calendarBackground: '#ffffff',
             textSectionTitleColor: '#b6c1cd',
