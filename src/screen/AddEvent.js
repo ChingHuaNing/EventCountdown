@@ -19,9 +19,16 @@ import {openDatabase} from 'react-native-sqlite-storage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import moment from 'moment';
+import firebase from '../remoteDB/firebaseDB';
+import {database} from 'firebase';
+// import database from '@react-native-firebase/database';
 
-//Connction to access the pre-populated user_db.db
+//Connection to access the pre-populated user_db.db
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
+
+// const firebase_events = firebase().firestore().collection('events');
+// const events_firebase = database().ref('/events/');
+// var events_firebase = firebase.database();
 
 const AddEvent = ({navigation}) => {
   let [eventTitle, setEventTitle] = useState('');
@@ -79,6 +86,24 @@ const AddEvent = ({navigation}) => {
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
+  let AddDataToFirebase = (
+    eventId,
+    eventTitle,
+    eventDate,
+    eventTime,
+    isEnabled,
+  ) => {
+    firebase
+      .database()
+      .ref('events/' + event_id)
+      .set({
+        event_title: eventTitle,
+        event_date: eventDate,
+        event_time: eventTime,
+        isEnabled: isEnabled,
+      });
+  };
+
   let add_event = () => {
     console.log(
       eventTitle,
@@ -130,6 +155,7 @@ const AddEvent = ({navigation}) => {
               ],
               {cancelable: false},
             );
+            AddDataToFirebase(11, eventTitle, eventDate, eventTime, true);
           } else {
             Alert.alert('Event added failed');
           }
