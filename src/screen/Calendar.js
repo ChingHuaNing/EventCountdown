@@ -12,7 +12,6 @@ export default function CalendarScreen({route, navigation}) {
   let [eventItemList, setEventItemList] = useState([]);
   let [eventDates, setEventDates] = useState([]);
 
-  //Retrieve events
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql('SELECT * FROM table_event', [], (tx, result) => {
@@ -27,7 +26,6 @@ export default function CalendarScreen({route, navigation}) {
     });
   }, []);
 
-  // Retrieve event_dates
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql('SELECT event_date FROM table_event', [], (tx, result) => {
@@ -42,7 +40,6 @@ export default function CalendarScreen({route, navigation}) {
     });
   }, []);
 
-  // Mark dates on calendar
   const markDates = () => {
     const markedDates = {};
 
