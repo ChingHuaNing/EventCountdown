@@ -1,26 +1,18 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {Calendar} from 'react-native-calendars';
 import moment from 'moment';
 import {openDatabase} from 'react-native-sqlite-storage';
 
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
-export default function CalendarScreen({navigation}) {
+export default function CalendarScreen({route, navigation}) {
   let [selectedEvents, setSelectedEvents] = useState([]);
   let [selectedDate, setSelectedDate] = useState('');
-  let [markedDate, setMarkedDate] = useState({});
   let [eventItemList, setEventItemList] = useState([]);
   let [eventDates, setEventDates] = useState([]);
 
+  //Retrieve events
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql('SELECT * FROM table_event', [], (tx, result) => {
@@ -28,31 +20,43 @@ export default function CalendarScreen({navigation}) {
           var tempEventList = [];
           for (i = 0; i < result.rows.length; i++) {
             tempEventList.push(result.rows.item(i));
-            setEventItemList(tempEventList);
           }
-          let markedDates = {};
-
-          let event = eventItemList.map((item) => item.event_date);
-          setEventDates(event);
-          console.log(eventDates);
+          setEventItemList(tempEventList);
         }
       });
     });
   }, []);
 
+  // Retrieve event_dates
   useEffect(() => {
-    let markedDates = {};
+    db.transaction((tx) => {
+      tx.executeSql('SELECT event_date FROM table_event', [], (tx, result) => {
+        if (result.rows.length > 0) {
+          var tempList = [];
+          for (i = 0; i < result.rows.length; i++) {
+            tempList.push(result.rows.item(i));
+          }
+          setEventDates(tempList);
+        }
+      });
+    });
+  }, []);
+
+  // Mark dates on calendar
+  const markDates = () => {
+    const markedDates = {};
 
     for (i = 0; i < eventDates.length; i++) {
-      markedDates[eventDates[i]] = {
+      markedDates[eventDates[i].event_date] = {
         selected: true,
         marked: true,
         dotColor: '#000',
         selectedColor: '#ffff80',
       };
     }
-    setMarkedDate(markedDates);
-  }, []);
+    console.log('MarkedDates', markedDates);
+    return markedDates;
+  };
 
   let listEventItem = (item) => {
     return (
@@ -86,7 +90,7 @@ export default function CalendarScreen({navigation}) {
           onDayPress={(day) => getOnPressEvent(day)}
           hideArrows={false}
           enableSwipeMonths={true}
-          markedDates={markedDate}
+          markedDates={markDates()}
           theme={{
             calendarBackground: '#ffffff',
             textSectionTitleColor: '#b6c1cd',
