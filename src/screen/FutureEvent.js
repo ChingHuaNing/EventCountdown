@@ -1,20 +1,9 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  FlatList,
-  ImageBackground,
-} from 'react-native';
-import Swipeout from 'react-native-swipeout';
+import {StyleSheet, View, Text, TouchableOpacity, FlatList} from 'react-native';
 
 import React, {useEffect, useState} from 'react';
-import Mybutton from './components/Mybutton';
-import Mytext from './components/Mytext';
 import {openDatabase} from 'react-native-sqlite-storage';
 
-//Connction to access the pre-populated user_db.db
+//Connection to access the pre-populated database
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
 function FutureEvent(props) {
@@ -54,9 +43,9 @@ function FutureEvent(props) {
           item={item}
           onPress={() => {
             navigation.navigate('EventDetails', {
-              inputEventId: item.event_id, //event_id
-              event_date: item.event_date, //event_date
-              event_time: item.event_time, //event_time
+              inputEventId: item.event_id,
+              event_date: item.event_date,
+              event_time: item.event_time,
             });
           }}>
           <View style={styles.listItem}>
@@ -65,68 +54,17 @@ function FutureEvent(props) {
           </View>
         </TouchableOpacity>
       </View>
-
-      // <View key={item.event_id} style={styles.listItem}>
-      //   <View style={{alignItems: 'center'}}>
-      //  {/* <ImageBackground
-      //       source={{uri: item.event_photo}}
-      //       style={styles.image}> */}
-      //       <Text style={{fontWeight: 'bold'}}>title:{item.event_title}</Text>
-      //       <Text style={{color: '#000000'}}>{item.event_date}</Text>
-      //       <Text>{item.event_time}</Text>
-      //       <Text>{item.event_venue}</Text>
-      //     {/* </ImageBackground> */}
-      //   </View>
-      // </View>
     );
-  };
-
-  let deleteUser = () => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        'DELETE FROM  table_event where event_id=?',
-        [eventId],
-        (tx, results) => {
-          console.log('Results', results.rowsAffected);
-          if (results.rowsAffected > 0) {
-            Alert.alert(
-              'Success',
-              'User deleted successfully',
-              [
-                {
-                  text: 'Ok',
-                  onPress: () => navigation.navigate('FutureEvent'),
-                },
-              ],
-              {cancelable: true},
-            );
-          }
-        },
-      );
-    });
   };
 
   return (
     <View style={styles.container}>
-      <FlatList
+      <FlatList // display all events
         style={{flex: 1}}
         data={flatListItems}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => listItemView(item)}
       />
-
-      {/* <Text style={styles.text}>Home Tab</Text> */}
-
-      {/* <TouchableOpacity // add button to see event details (temporary)
-        onPress={() =>
-          navigation.navigate('EventDetails', {
-            inputEventId: 1, //event_id
-            event_date: '2020-09-05', //event_date
-            event_time: '0300', //event_time
-          })
-        }>
-        <Text>EventDetails</Text>
-      </TouchableOpacity> */}
 
       <TouchableOpacity // add button to add new event
         onPress={() => navigation.navigate('AddEvent')}
@@ -161,7 +99,6 @@ const styles = StyleSheet.create({
     height: '50%',
     flex: 1,
     alignSelf: 'center',
-    //flexDirection: 'row',
     borderRadius: 5,
   },
   fab: {
