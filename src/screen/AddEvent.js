@@ -7,9 +7,7 @@ import {
   Alert,
   SafeAreaView,
   Text,
-  Image,
   Switch,
-  Platform,
   Button,
 } from 'react-native';
 import Mytextinput from './components/Mytextinput';
@@ -23,7 +21,7 @@ import firebase from '../remoteDB/firebaseDB';
 import {database} from 'firebase';
 // import database from '@react-native-firebase/database';
 
-//Connection to access the pre-populated user_db.db
+//Connection to access the pre-populated database
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
 // const firebase_events = firebase().firestore().collection('events');
@@ -39,8 +37,8 @@ const AddEvent = ({navigation}) => {
   let [eventDiary, setEventDiary] = useState('');
   let [isEnabled, setIsEnabled] = useState(false);
 
+  // date and time picker
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
   const showDatePicker = () => {
@@ -271,7 +269,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   baseText: {
     fontFamily: 'Cochin',
   },
@@ -283,17 +280,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
   },
-
   switch: {
     paddingLeft: 250,
-  },
-
-  datePicker: {
-    paddingLeft: 40,
-  },
-
-  button: {
-    backgroundColor: '#f5cf36',
-    color: '#ffffff',
   },
 });

@@ -1,19 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {
-  Text,
-  View,
-  Button,
-  SafeAreaView,
-  Image,
-  Alert,
-  StyleSheet,
-} from 'react-native';
+import {Text, View, SafeAreaView, Alert, StyleSheet} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {openDatabase} from 'react-native-sqlite-storage';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
 
-//Connection to access the pre-populated event_db.db
+//Connection to access the pre-populated database
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
 const EventDetails = ({route, navigation}) => {
@@ -106,10 +98,10 @@ const EventDetails = ({route, navigation}) => {
             Days until {eventData.event_title}{' '}
           </Text>
 
-          <Text style={styles.details}>Duration: {timing}</Text>
+          {/* <Text style={styles.details}>Duration: {timing}</Text> */}
 
           <CountDown
-            //style={{paddingBottom: 20}}
+            style={{paddingBottom: 20}}
             running={true}
             until={timing}
             onFinish={() => alert('finished')}
@@ -138,7 +130,11 @@ const EventDetails = ({route, navigation}) => {
               type="AntDesign"
             />
             <Icon
-              onPress={() => navigation.navigate('EditEvent')}
+              onPress={() => {
+                navigation.navigate('EditEvent', {
+                  inputEventId: eventData.event_id,
+                });
+              }}
               containerStyle={styles.icon}
               name="edit"
               type="AntDesign"
@@ -174,7 +170,6 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    //alignContent: 'stretch',
     width: 300,
   },
 });

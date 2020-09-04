@@ -7,31 +7,27 @@ import {
   Alert,
   SafeAreaView,
   Text,
-  Image,
   Switch,
-  Platform,
   Button,
 } from 'react-native';
 import Mytextinput from './components/Mytextinput';
 import Mybutton from './components/Mybutton';
 
 import {openDatabase} from 'react-native-sqlite-storage';
-import ImagePicker from 'react-native-image-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 
-//Connction to access the pre-populated event_db.db
+//Connction to access the pre-populated database
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
-const EditEvent = ({navigation}) => {
+const EditEvent = ({route, navigation}) => {
+  const {inputEventId} = route.params;
   let [eventTitle, setEventTitle] = useState('');
   let [eventDate, setEventDate] = useState('');
   let [eventTime, setEventTime] = useState('');
   let [eventVenue, setEventVenue] = useState('');
   let [eventDesc, setEventDesc] = useState('');
   let [eventDiary, setEventDiary] = useState('');
-  let [inputEventId, setInputEventId] = useState(2);
-
   let [isEnabled, setIsEnabled] = useState(false);
 
   let loadAllData = (
@@ -42,8 +38,6 @@ const EditEvent = ({navigation}) => {
     eventDesc,
     eventDiary,
   ) => {
-    //  let eventTitleTemp = eventTitle.toString();
-
     setEventTitle(eventTitle);
     setEventDate(eventDate);
     setEventTime(eventTime);
@@ -175,7 +169,7 @@ const EditEvent = ({navigation}) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('Home'),
+                  onPress: () => navigation.navigate('FutureEvent'),
                 },
               ],
               {cancelable: false},
@@ -299,7 +293,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   baseText: {
     fontFamily: 'Cochin',
   },
@@ -311,17 +304,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
   },
-
   switch: {
     paddingLeft: 250,
-  },
-
-  datePicker: {
-    paddingLeft: 40,
-  },
-
-  button: {
-    backgroundColor: '#f5cf36',
-    color: '#ffffff',
   },
 });
