@@ -38,18 +38,35 @@ function FutureEvent(props) {
 
   let listItemView = (item) => {
     return (
-      <View key={item.event_id} style={styles.listItem}>
-        <View style={{alignItems: 'center'}}>
-       {/* <ImageBackground
-            source={{uri: item.event_photo}}
-            style={styles.image}> */}
-            <Text style={{fontWeight: 'bold'}}>title:{item.event_title}</Text>
-            <Text style={{color: '#000000'}}>{item.event_date}</Text>
-            <Text>{item.event_time}</Text>
-            <Text>{item.event_venue}</Text>
-          {/* </ImageBackground> */}
-        </View>
+      <View>
+        <TouchableOpacity
+          item={item}
+          onPress={() => {
+            navigation.navigate('EventDetails', {
+              inputEventId: item.event_id, //event_id
+              event_date: item.event_date, //event_date
+              event_time: item.event_time, //event_time
+            });
+          }}>
+          <View style={styles.listItem}>
+            <Text style={{fontWeight: 'bold'}}>Title: {item.event_title}</Text>
+            <Text>Date: {item.event_date}</Text>
+          </View>
+        </TouchableOpacity>
       </View>
+
+      // <View key={item.event_id} style={styles.listItem}>
+      //   <View style={{alignItems: 'center'}}>
+      //  {/* <ImageBackground
+      //       source={{uri: item.event_photo}}
+      //       style={styles.image}> */}
+      //       <Text style={{fontWeight: 'bold'}}>title:{item.event_title}</Text>
+      //       <Text style={{color: '#000000'}}>{item.event_date}</Text>
+      //       <Text>{item.event_time}</Text>
+      //       <Text>{item.event_venue}</Text>
+      //     {/* </ImageBackground> */}
+      //   </View>
+      // </View>
     );
   };
 
@@ -87,9 +104,9 @@ function FutureEvent(props) {
         renderItem={({item}) => listItemView(item)}
       />
 
-      <Text style={styles.text}>Home Tab</Text>
+      {/* <Text style={styles.text}>Home Tab</Text> */}
 
-      <TouchableOpacity // add button to see event details (temporary)
+      {/* <TouchableOpacity // add button to see event details (temporary)
         onPress={() =>
           navigation.navigate('EventDetails', {
             inputEventId: 1, //event_id
@@ -98,7 +115,7 @@ function FutureEvent(props) {
           })
         }>
         <Text>EventDetails</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <TouchableOpacity // add button to add new event
         onPress={() => navigation.navigate('AddEvent')}
@@ -133,7 +150,7 @@ const styles = StyleSheet.create({
     height: '50%',
     flex: 1,
     alignSelf: 'center',
-    flexDirection: 'row',
+    //flexDirection: 'row',
     borderRadius: 5,
   },
   fab: {
