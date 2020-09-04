@@ -27,7 +27,7 @@ export default function CalendarScreen({route, navigation}) {
     });
   }, []);
 
-  // Retrieve event_dates
+  // Retrieve event dates
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql('SELECT event_date FROM table_event', [], (tx, result) => {
