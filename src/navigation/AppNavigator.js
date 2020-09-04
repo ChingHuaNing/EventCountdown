@@ -3,7 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from 'react-native-elements';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import Home from '../screen/Home';
 import FutureEvent from '../screen/FutureEvent';
@@ -16,7 +16,7 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MainStackNavigator(props) {
-  const {navigation} = props;
+  //const {navigation} = props;
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -68,18 +68,7 @@ function MainStackNavigator(props) {
         <Stack.Screen
           name="EventDetails"
           component={EventDetails}
-          options={({navigation}) => ({
-            title: 'Event Details',
-            headerRight: () => (
-              // Edit icon
-              <Icon
-                onPress={() => navigation.navigate('EditEvent')}
-                containerStyle={styles.icon}
-                name="edit"
-                type="AntDesign"
-              />
-            ),
-          })}
+          options={{title: 'Event Details'}}
         />
         <Stack.Screen
           name="Calendar"
@@ -137,6 +126,11 @@ const styles = StyleSheet.create({
   icon: {
     paddingLeft: 10,
     paddingRight: 10,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: 120,
   },
 });
 

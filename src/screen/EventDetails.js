@@ -5,8 +5,10 @@ import {
   Button,
   SafeAreaView,
   Image,
+  Alert,
   StyleSheet,
 } from 'react-native';
+import {Icon} from 'react-native-elements';
 import {openDatabase} from 'react-native-sqlite-storage';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
@@ -57,15 +59,46 @@ const EventDetails = ({route}) => {
         [inputEventId],
         (tx, results) => {
           var len = results.rows.length;
-          if (len > 0) {
-            setEventData(results.rows.item(0));
-          } else {
+          if (len < 1) {
             alert('No event found');
+          } else {
+            setEventData(results.rows.item(0));
           }
         },
       );
     });
   }, []);
+
+  let deleteEvent = () => {
+    console.log('in funct');
+    db.transaction((tx) => {
+      tx.executeSql(
+        'DELETE FROM  table_event where event_id=?',
+        [inputEventId],
+        (tx, results) => {
+          console.log('Results', results.rowsAffected);
+          if (results.rowsAffected > 0) {
+            Alert.alert(
+              'Confirm delete',
+              'Are you sure to selete this event?',
+              [
+                {
+                  text: 'Cancel',
+                  onPress: () => console.log('Cancel Pressed'),
+                  style: 'cancel',
+                },
+                {
+                  text: 'OK',
+                  onPress: () => navigation.navigate('FutureEvent'),
+                },
+              ],
+              {cancelable: true},
+            );
+          }
+        },
+      );
+    });
+  };
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -78,6 +111,7 @@ const EventDetails = ({route}) => {
           <Text style={styles.details}>Duration: {timing}</Text>
 
           <CountDown
+            //style={{paddingBottom: 20}}
             running={true}
             until={timing}
             onFinish={() => alert('finished')}
@@ -94,8 +128,24 @@ const EventDetails = ({route}) => {
             Event Venue: {eventData.event_venue}
           </Text>
           <Text style={styles.details}>
-            Description: {eventData.event_diary}
+            Description: {eventData.event_desc}
           </Text>
+          <Text style={styles.details}>Diary: {eventData.event_diary}</Text>
+
+          <View style={styles.iconContainer}>
+            <Icon
+              onPress={deleteEvent}
+              containerStyle={styles.icon}
+              name="delete"
+              type="AntDesign"
+            />
+            <Icon
+              onPress={() => navigation.navigate('EditEvent')}
+              containerStyle={styles.icon}
+              name="edit"
+              type="AntDesign"
+            />
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -119,6 +169,15 @@ const styles = StyleSheet.create({
     padding: 5,
     color: '#101010',
     fontSize: 16,
+  },
+  icon: {
+    padding: 15,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    //alignContent: 'stretch',
+    width: 300,
   },
 });
 
