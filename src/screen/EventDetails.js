@@ -15,9 +15,11 @@ import moment from 'moment';
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
 const EventDetails = ({route}) => {
+  //get parameters from previous page
   const {inputEventId} = route.params;
   const {event_date} = route.params;
   const {event_time} = route.params;
+  //concat the event date and time to get the event day
   let event_day = event_date.concat(
     ' ',
     event_time.substr(0, 2),
@@ -25,7 +27,8 @@ const EventDetails = ({route}) => {
     event_time.substr(2, 2),
   );
   console.log('EventDay = ', event_day);
-  let calculateDuration = () => {
+  //calculate the duration
+  let calculateDuration = (event_day) => {
     var date = moment().utcOffset('+0800').format('YYYY-MM-DD HH:mm:ss');
     console.log('Date = ', date);
     var eventDate = moment(event_day).format('YYYY-MM-DD HH:mm');
@@ -44,7 +47,7 @@ const EventDetails = ({route}) => {
     return duration;
   };
   let [eventData, setEventData] = useState('');
-  let timing = calculateDuration();
+  let timing = calculateDuration(event_day);
 
   useEffect(() => {
     console.log(inputEventId);
@@ -70,7 +73,7 @@ const EventDetails = ({route}) => {
         <View style={{flex: 1}}>
           <View style={{marginLeft: 35, marginRight: 35, marginTop: 10}}>
             <Text>Days until Merdeka </Text>
-            <Text>First Duration: {duration}</Text>
+
             <Text>Duration: {timing}</Text>
 
             <CountDown
