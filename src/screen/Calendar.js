@@ -28,8 +28,8 @@ export default function CalendarScreen({route, navigation}) {
           var tempEventList = [];
           for (i = 0; i < result.rows.length; i++) {
             tempEventList.push(result.rows.item(i));
-            setEventItemList(tempEventList);
           }
+          setEventItemList(tempEventList);
         }
       });
     });
@@ -42,9 +42,9 @@ export default function CalendarScreen({route, navigation}) {
           var tempList = [];
           for (i = 0; i < result.rows.length; i++) {
             tempList.push(result.rows.item(i));
-            setEventDates(tempList);
-            console.log('Event Database', eventDates);
           }
+          setEventDates(tempList);
+          console.log('Event Database', eventDates);
         }
       });
     });
