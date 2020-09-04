@@ -1,26 +1,21 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from 'react-native-elements';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 
-import Home from '../screen/Home';
 import FutureEvent from '../screen/FutureEvent';
-import PastEvent from '../screen/PastEvent';
 import AddEvent from '../screen/AddEvent';
 import EditEvent from '../screen/EditEvent';
 import EventDetails from '../screen/EventDetails';
 import Calendar from '../screen/Calendar';
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
 
 function MainStackNavigator(props) {
-  //const {navigation} = props;
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="FutureEvent"
         screenOptions={{
           headerStyle: {
             backgroundColor: '#ffff80',
@@ -35,13 +30,8 @@ function MainStackNavigator(props) {
         // let the navigation bar stick on top
         headerMode="float">
         <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{title: 'My Days'}}
-        />
-        <Stack.Screen
           name="FutureEvent"
-          component={MainTabNavigator}
+          component={FutureEvent}
           options={({navigation}) => ({
             title: 'My Days',
             headerRight: () => (
@@ -77,48 +67,6 @@ function MainStackNavigator(props) {
         />
       </Stack.Navigator>
     </NavigationContainer>
-  );
-}
-
-// bottom tab navigation bar
-function MainTabNavigator() {
-  return (
-    <Tab.Navigator
-      tabBarOptions={{
-        activeTintColor: '#101010', // font color for active bar
-        style: {
-          backgroundColor: '#ffff80', // color of tab
-        },
-      }}>
-      <Tab.Screen
-        name="Future Events"
-        component={FutureEvent}
-        options={{
-          tabBarIcon: ({color, size}) => (
-            <Icon
-              name="ios-hourglass-outline"
-              type="ionicon"
-              color={color}
-              size={size}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Past Events"
-        component={PastEvent}
-        options={{
-          tabBarIcon: ({color, size}) => (
-            <Icon
-              name="ios-time-outline"
-              type="ionicon"
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-    </Tab.Navigator>
   );
 }
 

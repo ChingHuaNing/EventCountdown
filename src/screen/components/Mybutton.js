@@ -1,7 +1,3 @@
-// Example: Pre-Populated SQLite Database in React Native
-// https://aboutreact.com/example-of-pre-populated-sqlite-database-in-react-native
-// Custom Button
-
 import React from 'react';
 import {TouchableOpacity, Text, StyleSheet} from 'react-native';
 
@@ -16,7 +12,7 @@ const Mybutton = (props) => {
 const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
-    backgroundColor: '#f5cf36',
+    backgroundColor: '#a13fe8',
     color: '#ffffff',
     padding: 10,
     marginTop: 16,

@@ -1,29 +1,23 @@
 import React, {useState, useEffect} from 'react';
-import {
-  Text,
-  View,
-  Button,
-  SafeAreaView,
-  Image,
-  Alert,
-  StyleSheet,
-} from 'react-native';
+import {Text, View, SafeAreaView, Alert, StyleSheet} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {openDatabase} from 'react-native-sqlite-storage';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
 
-//Connection to access the pre-populated event_db.db
+//Connection to access the pre-populated database
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
-const EventDetails = ({route}) => {
+const EventDetails = ({route, navigation}) => {
   let [eventData, setEventData] = useState('');
+
   //get parameters from previous page
   const {inputEventId} = route.params;
   const {event_date} = route.params;
   const {event_time} = route.params;
   //concat the event date and time to get the event day
   let event_day = event_date.concat(' ', event_time);
+
   console.log('EventDay = ', event_day);
   //calculate the duration
   let calculateDuration = () => {
@@ -104,10 +98,10 @@ const EventDetails = ({route}) => {
             Days until {eventData.event_title}{' '}
           </Text>
 
-          <Text style={styles.details}>Duration: {timing}</Text>
+          {/* <Text style={styles.details}>Duration: {timing}</Text> */}
 
           <CountDown
-            //style={{paddingBottom: 20}}
+            style={{paddingBottom: 20}}
             running={true}
             until={timing}
             onFinish={() => alert('finished')}
@@ -128,7 +122,6 @@ const EventDetails = ({route}) => {
           </Text>
           <Text style={styles.details}>Diary: {eventData.event_diary}</Text>
 
-
           <View style={styles.iconContainer}>
             <Icon
               onPress={deleteEvent}
@@ -137,13 +130,16 @@ const EventDetails = ({route}) => {
               type="AntDesign"
             />
             <Icon
-              onPress={() => navigation.navigate('EditEvent')}
+              onPress={() => {
+                navigation.navigate('EditEvent', {
+                  inputEventId: eventData.event_id,
+                });
+              }}
               containerStyle={styles.icon}
               name="edit"
               type="AntDesign"
             />
           </View>
-
         </View>
       </View>
     </SafeAreaView>
@@ -174,7 +170,6 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    //alignContent: 'stretch',
     width: 300,
   },
 });
