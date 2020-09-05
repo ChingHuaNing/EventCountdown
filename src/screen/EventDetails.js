@@ -9,8 +9,6 @@ import moment from 'moment';
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
 const EventDetails = ({route, navigation}) => {
-  let [eventData, setEventData] = useState('');
-
   //get parameters from previous page
   const {inputEventId} = route.params;
   const {event_date} = route.params;
@@ -40,6 +38,7 @@ const EventDetails = ({route, navigation}) => {
   };
 
   let timing = calculateDuration();
+  let [eventData, setEventData] = useState('');
 
   useEffect(() => {
     console.log(inputEventId);
@@ -106,7 +105,6 @@ const EventDetails = ({route, navigation}) => {
             until={timing}
             onFinish={() => alert('finished')}
             size={30}
-            digitStyle={{backgroundColor: '#FFF'}}
           />
 
           <Text style={styles.details}>

@@ -3,7 +3,7 @@
 // Custom TextInput
 
 import React from 'react';
-import { View, TextInput } from 'react-native';
+import {View, TextInput} from 'react-native';
 
 const Mytextinput = (props) => {
   return (
@@ -12,16 +12,15 @@ const Mytextinput = (props) => {
         marginLeft: 35,
         marginRight: 35,
         marginTop: 10,
-        borderColor: '#007FFF',
-        borderWidth: 1,
+        borderColor: '#bdbdbd',
+        borderRadius: 10,
+        borderWidth: 0.5,
       }}>
       <TextInput
         underlineColorAndroid="transparent"
-
         label={props.label}
-
         placeholder={props.placeholder}
-        placeholderTextColor="#007FFF"
+        placeholderTextColor="#a3a3a3"
         keyboardType={props.keyboardType}
         onChangeText={props.onChangeText}
         returnKeyType={props.returnKeyType}
