@@ -1,40 +1,27 @@
-import {StyleSheet, View, Text, TouchableOpacity, FlatList} from 'react-native';
+import {StyleSheet, View, Text, FlatList} from 'react-native';
 
-import React, {useEffect, useState} from 'react';
-import {openDatabase} from 'react-native-sqlite-storage';
+import React, {useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 
-//Connection to access the pre-populated database
-var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
-
-function FutureEvent(props) {
-  const {navigation} = props;
-
+function FutureEvent() {
   let [flatListItems, setFlatListItems] = useState([]);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener(
-      'focus',
-      () => {
-        db.transaction((tx) => {
-          tx.executeSql(
-            'SELECT * FROM table_event ORDER BY event_date ASC',
-            [],
-            (tx, results) => {
-              var temp = [];
-              for (let i = 0; i < results.rows.length; ++i) {
-                console.log(results.rows.item(i));
-                temp.push(results.rows.item(i));
-              }
-              setFlatListItems(temp);
-            },
-          );
+  firestore()
+    .collection('events')
+    .orderBy('event_date', 'asc')
+    .get()
+    .then((querySnapshot) => {
+      const temp = [];
+      querySnapshot.forEach((doc) => {
+        const {event_title, event_diary} = doc.data();
+        temp.push({
+          key: doc.id,
+          event_title,
+          event_diary,
         });
-        return unsubscribe;
-      },
-      [navigation],
-    );
-  }, []);
+      });
+      setFlatListItems(temp);
+    });
 
   let listItemView = (item) => {
     return (
@@ -65,11 +52,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
     marginTop: 10,
   },
-  image: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
   text: {
     color: '#101010',
     fontSize: 24,
@@ -84,22 +66,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'center',
     borderRadius: 5,
-  },
-  fab: {
-    position: 'absolute',
-    width: 56,
-    height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 20,
-    bottom: 20,
-    backgroundColor: '#a13fe8',
-    borderRadius: 30,
-    elevation: 8,
-  },
-  fabIcon: {
-    fontSize: 30,
-    color: 'white',
   },
 });
 
