@@ -204,10 +204,11 @@ const EditEvent = ({route, navigation}) => {
                 style={{
                   flex: 1,
                   flexDirection: 'row',
-                  paddingLeft: 40,
-                  padding: 10,
                 }}>
-                <Button title="Pick Your Event Date" onPress={showDatePicker} />
+                <Mybutton
+                  title="Pick Your Event Date"
+                  customClick={showDatePicker}
+                />
                 <DateTimePickerModal
                   isVisible={isDatePickerVisible}
                   mode="date"
@@ -223,10 +224,11 @@ const EditEvent = ({route, navigation}) => {
                 style={{
                   flex: 1,
                   flexDirection: 'row',
-                  paddingLeft: 40,
-                  padding: 10,
                 }}>
-                <Button title="Pick Your Event Time" onPress={showTimePicker} />
+                <Mybutton
+                  title="Pick Your Event Time"
+                  customClick={showTimePicker}
+                />
                 <DateTimePickerModal
                   isVisible={isTimePickerVisible}
                   mode="time"
@@ -299,14 +301,15 @@ const styles = StyleSheet.create({
     fontFamily: 'Cochin',
   },
   titleText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     textAlignVertical: 'top',
-    paddingLeft: 40,
-    paddingTop: 10,
+    paddingLeft: 35,
+    paddingTop: 25,
     paddingBottom: 10,
   },
   switch: {
     paddingLeft: 250,
+    paddingTop: 30,
   },
 });
