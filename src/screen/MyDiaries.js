@@ -2,6 +2,7 @@ import {StyleSheet, View, Text, TouchableOpacity, FlatList} from 'react-native';
 
 import React, {useEffect, useState} from 'react';
 import {openDatabase} from 'react-native-sqlite-storage';
+import firestore from '@react-native-firebase/firestore';
 
 //Connection to access the pre-populated database
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
@@ -38,20 +39,10 @@ function FutureEvent(props) {
   let listItemView = (item) => {
     return (
       <View>
-        <TouchableOpacity
-          item={item}
-          onPress={() => {
-            navigation.navigate('EventDetails', {
-              inputEventId: item.event_id,
-              event_date: item.event_date,
-              event_time: item.event_time,
-            });
-          }}>
-          <View style={styles.listItem}>
-            <Text style={{fontWeight: 'bold'}}>Title: {item.event_title}</Text>
-            <Text>Date: {item.event_date}</Text>
-          </View>
-        </TouchableOpacity>
+        <View style={styles.listItem}>
+          <Text style={{fontWeight: 'bold'}}>Title: {item.event_title}</Text>
+          <Text>Diary: {item.event_diary}</Text>
+        </View>
       </View>
     );
   };
@@ -64,12 +55,6 @@ function FutureEvent(props) {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => listItemView(item)}
       />
-
-      <TouchableOpacity // add button to add new event
-        onPress={() => navigation.navigate('AddEvent')}
-        style={styles.fab}>
-        <Text style={styles.fabIcon}>+</Text>
-      </TouchableOpacity>
     </View>
   );
 }

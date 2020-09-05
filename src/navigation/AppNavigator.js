@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from 'react-native-elements';
 import {StyleSheet} from 'react-native';
 
@@ -9,7 +10,9 @@ import AddEvent from '../screen/AddEvent';
 import EditEvent from '../screen/EditEvent';
 import EventDetails from '../screen/EventDetails';
 import Calendar from '../screen/Calendar';
+import MyDiaries from '../screen/MyDiaries';
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function MainStackNavigator(props) {
   return (
@@ -31,7 +34,7 @@ function MainStackNavigator(props) {
         headerMode="float">
         <Stack.Screen
           name="FutureEvent"
-          component={FutureEvent}
+          component={MainTabNavigator}
           options={({navigation}) => ({
             title: 'My Days',
             headerRight: () => (
@@ -67,6 +70,47 @@ function MainStackNavigator(props) {
         />
       </Stack.Navigator>
     </NavigationContainer>
+  );
+}
+
+function MainTabNavigator() {
+  return (
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: '#101010', // font color for active bar
+        style: {
+          backgroundColor: '#ffff80', // color of tab
+        },
+      }}>
+      <Tab.Screen
+        name="Events"
+        component={FutureEvent}
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <Icon
+              name="ios-hourglass-outline"
+              type="ionicon"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="My Diaries"
+        component={MyDiaries}
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <Icon
+              name="book-outline"
+              type="ionicon"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 }
 
