@@ -15,6 +15,7 @@ import Mybutton from './components/Mybutton';
 
 import {openDatabase} from 'react-native-sqlite-storage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import firestore from '@react-native-firebase/firestore';
 
 import moment from 'moment';
 
@@ -135,6 +136,18 @@ const AddEvent = ({navigation}) => {
         },
       );
     });
+
+    firestore()
+      .collection('events')
+      .add({
+        event_title: eventTitle,
+        event_date: eventDate,
+        event_time: eventTime,
+        event_diary: eventDiary,
+      })
+      .then(() => {
+        console.log('Event added!');
+      });
   };
 
   return (

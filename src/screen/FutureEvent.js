@@ -80,11 +80,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
     marginTop: 10,
   },
-  image: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
   text: {
     color: '#101010',
     fontSize: 24,
