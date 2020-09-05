@@ -8,7 +8,6 @@ import {
   SafeAreaView,
   Text,
   Switch,
-  Button,
 } from 'react-native';
 import Mytextinput from './components/Mytextinput';
 import Mybutton from './components/Mybutton';
@@ -80,7 +79,7 @@ const AddEvent = ({navigation}) => {
   //calculate the duration
   let calculateDuration = (event_date, event_time) => {
     let event_day = event_date.concat(' ', event_time);
-    var date = moment().utcOffset('+0800').format('YYYY-MM-DD HH:mm:ss');
+    var date = moment().format('YYYY-MM-DD HH:mm:ss');
     var eventDate = moment(event_day).format('YYYY-MM-DD HH:mm');
     var diff = moment.duration(moment(eventDate).diff(moment(date)));
 

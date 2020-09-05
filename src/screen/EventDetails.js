@@ -18,7 +18,7 @@ const EventDetails = ({route, navigation}) => {
 
   //calculate the duration
   let calculateDuration = () => {
-    var date = moment().utcOffset('+0800').format('YYYY-MM-DD HH:mm:ss');
+    var date = moment().format('YYYY-MM-DD HH:mm:ss');
     var eventDate = moment(event_day).format('YYYY-MM-DD HH:mm');
     var diff = moment.duration(moment(eventDate).diff(moment(date)));
 
