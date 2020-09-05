@@ -1,7 +1,3 @@
-// Example: Pre-Populated SQLite Database in React Native
-// https://aboutreact.com/example-of-pre-populated-sqlite-database-in-react-native
-// Custom TextInput
-
 import React from 'react';
 import {View, TextInput} from 'react-native';
 

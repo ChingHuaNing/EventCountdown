@@ -1,9 +1,5 @@
-// Example: Pre-Populated SQLite Database in React Native
-// https://aboutreact.com/example-of-pre-populated-sqlite-database-in-react-native
-// Custom Button
-
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import {TouchableOpacity, Text, StyleSheet} from 'react-native';
 
 const Mybutton = (props) => {
   return (
