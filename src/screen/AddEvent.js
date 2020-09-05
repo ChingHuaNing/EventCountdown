@@ -128,13 +128,6 @@ const AddEvent = ({navigation}) => {
 
     // Add event data into sqlite database
     db.transaction(function (tx) {
-      firestore().collection('events').doc().set({
-        event_title: eventTitle,
-        event_date: eventDate,
-        event_time: eventTime,
-        event_diary: eventDiary,
-      });
-
       tx.executeSql(
         'INSERT INTO table_event (event_title,event_date,event_time,event_venue,event_desc,event_diary) VALUES (?,?,?,?,?,?)',
         [eventTitle, eventDate, eventTime, eventVenue, eventDesc, eventDiary],
