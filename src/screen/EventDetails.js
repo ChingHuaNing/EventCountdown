@@ -18,31 +18,24 @@ const EventDetails = ({route, navigation}) => {
   //concat the event date and time to get the event day
   let event_day = event_date.concat(' ', event_time);
 
-  console.log('EventDay = ', event_day);
   //calculate the duration
   let calculateDuration = () => {
     var date = moment().utcOffset('+0800').format('YYYY-MM-DD HH:mm:ss');
-    console.log('Date = ', date);
     var eventDate = moment(event_day).format('YYYY-MM-DD HH:mm');
-    console.log('EventDate = ', eventDate);
     var diff = moment.duration(moment(eventDate).diff(moment(date)));
 
     var hours = parseInt(diff.asHours());
     var minutes = parseInt(diff.minutes());
     var seconds = parseInt(diff.seconds());
 
-    console.log('Hours = ', hours);
-    console.log('Minutes = ', minutes);
-    console.log('Seconds = ', seconds);
     var duration = hours * 60 * 60 + minutes * 60 + seconds;
-    console.log('Duration = ', duration);
     return duration;
   };
 
   let timing = calculateDuration();
 
+  //Retrieve event data based on event_id
   useEffect(() => {
-    console.log(inputEventId);
     db.transaction((tx) => {
       tx.executeSql(
         'SELECT * FROM table_event where event_id = ?',
@@ -59,14 +52,13 @@ const EventDetails = ({route, navigation}) => {
     });
   }, []);
 
+  // Delete Event function
   let deleteEvent = () => {
-    console.log('in funct');
     db.transaction((tx) => {
       tx.executeSql(
         'DELETE FROM  table_event where event_id=?',
         [inputEventId],
         (tx, results) => {
-          console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
             Alert.alert(
               'Confirm delete',
@@ -74,7 +66,6 @@ const EventDetails = ({route, navigation}) => {
               [
                 {
                   text: 'Cancel',
-                  onPress: () => console.log('Cancel Pressed'),
                   style: 'cancel',
                 },
                 {
@@ -98,15 +89,12 @@ const EventDetails = ({route, navigation}) => {
             Days until {eventData.event_title}{' '}
           </Text>
 
-          {/* <Text style={styles.details}>Duration: {timing}</Text> */}
-
           <CountDown
             style={{paddingBottom: 20}}
             running={true}
             until={timing}
             onFinish={() => alert('finished')}
             size={30}
-            digitStyle={{backgroundColor: '#FFF'}}
           />
 
           <Text style={styles.details}>

@@ -4,15 +4,16 @@ import {Calendar} from 'react-native-calendars';
 import moment from 'moment';
 import {openDatabase} from 'react-native-sqlite-storage';
 
+//Connection to access the pre-populated database
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
-export default function CalendarScreen({route, navigation}) {
+export default function CalendarScreen({navigation}) {
   let [selectedEvents, setSelectedEvents] = useState([]);
   let [selectedDate, setSelectedDate] = useState('');
   let [eventItemList, setEventItemList] = useState([]);
   let [eventDates, setEventDates] = useState([]);
 
-  //Retrieve events
+  //Retrieve data from table_event
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql('SELECT * FROM table_event', [], (tx, result) => {
@@ -27,7 +28,7 @@ export default function CalendarScreen({route, navigation}) {
     });
   }, []);
 
-  // Retrieve event dates
+  // Retrieve event's dates
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql('SELECT event_date FROM table_event', [], (tx, result) => {
@@ -54,10 +55,10 @@ export default function CalendarScreen({route, navigation}) {
         selectedColor: '#ffff80',
       };
     }
-    console.log('MarkedDates', markedDates);
     return markedDates;
   };
 
+  //list flatlist's event item
   let listEventItem = (item) => {
     return (
       <TouchableOpacity style={styles.item}>
@@ -86,7 +87,7 @@ export default function CalendarScreen({route, navigation}) {
   return (
     <View style={styles.container}>
       <View>
-        <Calendar
+        <Calendar // display calendar
           onDayPress={(day) => getOnPressEvent(day)}
           hideArrows={false}
           enableSwipeMonths={true}
@@ -105,7 +106,7 @@ export default function CalendarScreen({route, navigation}) {
         />
       </View>
       <View style={styles.listContainer}>
-        <FlatList
+        <FlatList // display all events
           data={selectedEvents}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item}) => listEventItem(item)}

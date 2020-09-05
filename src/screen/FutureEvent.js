@@ -11,6 +11,7 @@ function FutureEvent(props) {
 
   let [flatListItems, setFlatListItems] = useState([]);
 
+  //Retrieve data from table_event (order by event_date in ascending order)
   useEffect(() => {
     const unsubscribe = navigation.addListener(
       'focus',
@@ -22,7 +23,6 @@ function FutureEvent(props) {
             (tx, results) => {
               var temp = [];
               for (let i = 0; i < results.rows.length; ++i) {
-                console.log(results.rows.item(i));
                 temp.push(results.rows.item(i));
               }
               setFlatListItems(temp);
@@ -35,6 +35,7 @@ function FutureEvent(props) {
     );
   }, []);
 
+  //display flatListItems's data
   let listItemView = (item) => {
     return (
       <View>
@@ -42,6 +43,7 @@ function FutureEvent(props) {
           item={item}
           onPress={() => {
             navigation.navigate('EventDetails', {
+              // pass inputEventId, event_date and event_time to eventDetails' page
               inputEventId: item.event_id,
               event_date: item.event_date,
               event_time: item.event_time,

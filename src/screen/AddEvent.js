@@ -20,7 +20,6 @@ import firestore from '@react-native-firebase/firestore';
 import moment from 'moment';
 
 //Connection to access the pre-populated database
-
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
 const AddEvent = ({navigation}) => {
@@ -36,36 +35,37 @@ const AddEvent = ({navigation}) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
+  //Show Date Picker
   const showDatePicker = () => {
     setDatePickerVisibility(true);
-    console.log('show date picker');
   };
 
+  // Hide Date Picker
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
 
+  // Set Event Date
   const handleConfirm1 = (date) => {
     hideDatePicker();
 
     eventDate = moment(date).format('YYYY-MM-DD');
     eventDate.toString();
-    console.log(eventDate);
 
     setEventDate(eventDate);
-
-    console.log(eventDate);
   };
 
+  // Show Time Picker
   const showTimePicker = () => {
     setTimePickerVisibility(true);
-    console.log('show time picker');
   };
 
+  // Hide Time Picker
   const hideTimePicker = () => {
     setTimePickerVisibility(false);
   };
 
+  // Set Event Time
   const handleConfirm2 = (time) => {
     hideTimePicker();
 
@@ -73,64 +73,73 @@ const AddEvent = ({navigation}) => {
 
     eventTime.toString();
     setEventTime(eventTime);
-
-    console.log(eventTime);
   };
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-  let add_event = () => {
-    console.log(
-      eventTitle,
-      eventDate,
-      eventTime,
-      eventVenue,
-      eventDesc,
-      eventDiary,
-      isEnabled,
-    );
+  //calculate the duration
+  let calculateDuration = (event_date, event_time) => {
+    let event_day = event_date.concat(' ', event_time);
+    var date = moment().utcOffset('+0800').format('YYYY-MM-DD HH:mm:ss');
+    var eventDate = moment(event_day).format('YYYY-MM-DD HH:mm');
+    var diff = moment.duration(moment(eventDate).diff(moment(date)));
 
+    var hours = parseInt(diff.asHours());
+    var minutes = parseInt(diff.minutes());
+    var seconds = parseInt(diff.seconds());
+
+    var duration = hours * 60 * 60 + minutes * 60 + seconds;
+    return duration;
+  };
+
+  // Add Event Function
+  let add_event = () => {
+    // If event date and time is not chosen
+    if (calculateDuration(eventDate, eventTime) < 0) {
+      Alert.alert('Please pick future event date and event time');
+      return;
+    }
+
+    // event title is empty
     if (!eventTitle) {
       Alert.alert('Please fill event title');
       return;
     }
+    // event title is empty
     if (!eventDate) {
       Alert.alert('Please pick an event date');
       return;
     }
+    // event time is empty
     if (!eventTime) {
       Alert.alert('Please pick an event time');
       return;
     }
+    // event venue is empty
     if (!eventVenue) {
       Alert.alert('Please fill event venue');
       return;
     }
+    // event description is empty
     if (!eventDesc) {
       Alert.alert('Please fill event description');
       return;
     }
 
+    // Add event data into sqlite database
     db.transaction(function (tx) {
-      firestore()
-        .collection('events')
-        .doc()
-        .set({
-          event_title: eventTitle,
-          event_date: eventDate,
-          event_time: eventTime,
-          event_diary: eventDiary,
-        })
-        .then(() => {
-          console.log('event addedddd');
-        });
+      firestore().collection('events').doc().set({
+        event_title: eventTitle,
+        event_date: eventDate,
+        event_time: eventTime,
+        event_diary: eventDiary,
+      });
 
       tx.executeSql(
         'INSERT INTO table_event (event_title,event_date,event_time,event_venue,event_desc,event_diary) VALUES (?,?,?,?,?,?)',
         [eventTitle, eventDate, eventTime, eventVenue, eventDesc, eventDiary],
 
         (tx, results) => {
-          console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
             Alert.alert(
               'Success',
@@ -138,29 +147,25 @@ const AddEvent = ({navigation}) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('FutureEvent'),
+                  onPress: () => navigation.navigate('FutureEvent'), // go back to future event's page
                 },
               ],
               {cancelable: false},
             );
           } else {
-            Alert.alert('Event added failed');
+            Alert.alert('Event added failed'); // Event is not added successfully
           }
         },
       );
     });
 
-    firestore()
-      .collection('events')
-      .add({
-        event_title: eventTitle,
-        event_date: eventDate,
-        event_time: eventTime,
-        event_diary: eventDiary,
-      })
-      .then(() => {
-        console.log('Event added!');
-      });
+    // add event title, date, time and diary into cloud firestore
+    firestore().collection('events').add({
+      event_title: eventTitle,
+      event_date: eventDate,
+      event_time: eventTime,
+      event_diary: eventDiary,
+    });
   };
 
   return (
