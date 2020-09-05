@@ -17,10 +17,11 @@ import {openDatabase} from 'react-native-sqlite-storage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 
-//Connction to access the pre-populated database
+//Connection to access the pre-populated database
 var db = openDatabase({name: 'event_db.db', createFromLocation: 1});
 
 const EditEvent = ({route, navigation}) => {
+  // Accept inputEventId from EventDetails' screen
   const {inputEventId} = route.params;
   let [eventTitle, setEventTitle] = useState('');
   let [eventDate, setEventDate] = useState('');
@@ -30,6 +31,7 @@ const EditEvent = ({route, navigation}) => {
   let [eventDiary, setEventDiary] = useState('');
   let [isEnabled, setIsEnabled] = useState(false);
 
+  //load all events' data
   let loadAllData = (
     eventTitle,
     eventDate,
@@ -46,9 +48,8 @@ const EditEvent = ({route, navigation}) => {
     setEventDiary(eventDiary);
   };
 
+  // Retrive event data according to event_id
   useEffect(() => {
-    console.log(inputEventId);
-
     db.transaction((tx) => {
       tx.executeSql(
         'SELECT * FROM table_event where event_id = ?',
@@ -58,7 +59,6 @@ const EditEvent = ({route, navigation}) => {
 
           if (len > 0) {
             let res = results.rows.item(0);
-            console.log('Result', results.rows.item(0));
             loadAllData(
               res.event_title,
               res.event_date,
@@ -79,75 +79,77 @@ const EditEvent = ({route, navigation}) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
+  //Show Date Picker
   const showDatePicker = () => {
     setDatePickerVisibility(true);
-    console.log('show date picker');
   };
 
+  // Hide Date Picker
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
 
+  // Set Event Date
   const handleConfirm1 = (date) => {
-    console.warn('A date has been picked: ', date);
-    console.log('Date choose', date);
     hideDatePicker();
 
     eventDate = moment(date).format('YYYY-MM-DD');
     eventDate.toString();
-    console.log(eventDate);
 
     setEventDate(eventDate);
-
-    console.log(eventDate);
   };
 
+  // Show Time Picker
   const showTimePicker = () => {
     setTimePickerVisibility(true);
-    console.log('show time picker');
   };
 
+  // Hide Time Picker
   const hideTimePicker = () => {
     setTimePickerVisibility(false);
   };
 
+  // Set Event Time
   const handleConfirm2 = (time) => {
-    console.warn('A time has been picked: ', time);
-    console.log('Time choose', time);
     hideTimePicker();
 
     eventTime = moment(time).format('HH:mm');
 
     eventTime.toString();
     setEventTime(eventTime);
-
-    console.log(eventTime);
   };
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
+  // Edit Event Function
   let edit_event = () => {
+    //event title is empty
     if (!eventTitle) {
       Alert.alert('Please fill event title');
       return;
     }
+    //event date is empty
     if (!eventDate) {
       Alert.alert('Please pick an event date');
       return;
     }
+    //event time is empty
     if (!eventTime) {
       Alert.alert('Please pick an event time');
       return;
     }
+    //event venue is empty
     if (!eventVenue) {
       Alert.alert('Please fill event venue');
       return;
     }
+    //event description is empty
     if (!eventDesc) {
       Alert.alert('Please fill event description');
       return;
     }
 
+    // update event data into database
     db.transaction((tx) => {
       tx.executeSql(
         'UPDATE table_event set event_title=?, event_date=? , event_time=? , event_venue=? , event_desc = ? , event_diary=? where event_id=?',
@@ -169,7 +171,7 @@ const EditEvent = ({route, navigation}) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('FutureEvent'),
+                  onPress: () => navigation.goBack(), // go back to previous page
                 },
               ],
               {cancelable: false},

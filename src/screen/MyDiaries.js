@@ -3,9 +3,10 @@ import {StyleSheet, View, Text, FlatList} from 'react-native';
 import React, {useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 
-function FutureEvent() {
+function MyDiaries() {
   let [flatListItems, setFlatListItems] = useState([]);
 
+  // Retrieve event diaries data (event_title and event_diary) from firestore
   firestore()
     .collection('events')
     .orderBy('event_date', 'asc')
@@ -23,6 +24,7 @@ function FutureEvent() {
       setFlatListItems(temp);
     });
 
+  // display flatListItems's data
   let listItemView = (item) => {
     return (
       <View>
@@ -69,4 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FutureEvent;
+export default MyDiaries;
