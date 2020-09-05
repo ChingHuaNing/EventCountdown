@@ -15,6 +15,7 @@ import Mybutton from './components/Mybutton';
 
 import {openDatabase} from 'react-native-sqlite-storage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import firestore from '@react-native-firebase/firestore';
 
 import moment from 'moment';
 
@@ -111,6 +112,19 @@ const AddEvent = ({navigation}) => {
     }
 
     db.transaction(function (tx) {
+      firestore()
+        .collection('events')
+        .doc()
+        .set({
+          event_title: eventTitle,
+          event_date: eventDate,
+          event_time: eventTime,
+          event_diary: eventDiary,
+        })
+        .then(() => {
+          console.log('event addedddd');
+        });
+
       tx.executeSql(
         'INSERT INTO table_event (event_title,event_date,event_time,event_venue,event_desc,event_diary) VALUES (?,?,?,?,?,?)',
         [eventTitle, eventDate, eventTime, eventVenue, eventDesc, eventDiary],
