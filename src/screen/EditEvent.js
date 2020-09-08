@@ -170,7 +170,7 @@ const EditEvent = ({route, navigation}) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.goBack(), // go back to previous page
+                  onPress: () => navigation.navigate('FutureEvent'), // go back to Future Event Page
                 },
               ],
               {cancelable: false},

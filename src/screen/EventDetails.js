@@ -61,7 +61,7 @@ const EventDetails = ({route, navigation}) => {
           if (results.rowsAffected > 0) {
             Alert.alert(
               'Confirm delete',
-              'Are you sure to selete this event?',
+              'Are you sure to delete this event?',
               [
                 {
                   text: 'Cancel',
